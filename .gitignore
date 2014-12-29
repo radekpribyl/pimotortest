@@ -6,6 +6,9 @@
 *.user
 *.sln.docstates
 
+#Python virtual environment
+env/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
