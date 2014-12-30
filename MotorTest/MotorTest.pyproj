@@ -43,6 +43,7 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="servod" />
     <Content Include="sgh_PCF8591P.pyc" />
   </ItemGroup>
   <PropertyGroup>
