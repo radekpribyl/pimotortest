@@ -277,12 +277,12 @@ def stop():
     
 # forward(speed): Sets both motors to move forward at speed. 0 <= speed <= 100
 def forward(speed):
-    p.ChangeDutyCycle(speed)
+    p.ChangeDutyCycle(speed * 0.927)
     q.ChangeDutyCycle(0)
     a.ChangeDutyCycle(speed)
     b.ChangeDutyCycle(0)
-    p.ChangeFrequency(speed + 5)
-    a.ChangeFrequency(speed + 5)
+    p.ChangeFrequency(100)
+    a.ChangeFrequency(100)
     
 # reverse(speed): Sets both motors to reverse at speed. 0 <= speed <= 100
 def reverse(speed):
