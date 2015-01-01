@@ -52,19 +52,25 @@ def dozadu():
 @app.route('/motor/zrychli')
 def zrychli():
     if zapnuty:
+        global rychlost
         rychlost = rychlost + 10
         if rychlost > 100 :
             rychlost = 100
+        print "current action is: %s" % (current_action)
         if current_action is not None:
+            print "calling %s %s" % (current_action, rychlost)
             current_action(rychlost)
     return jsonify(response="ok")
 
 @app.route('/motor/zpomal')
 def zpomal():
     if zapnuty:
+        global rychlost
         rychlost = rychlost - 10
         if rychlost < 1 :
             rychlost = 0
+        print "current action is: %s" % (current_action)
         if current_action is not None:
+            print "calling %s %s" % (current_action, rychlost)
             current_action(rychlost)
     return jsonify(response="ok")
