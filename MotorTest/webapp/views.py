@@ -1,6 +1,6 @@
 from webapp import app
 
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, jsonify
 
 import pi2go as p
 
@@ -8,6 +8,7 @@ import pi2go as p
 
 zapnuty = False
 rychlost = 30
+current_action = None
 
 @app.route('/')
 def home():
@@ -23,14 +24,47 @@ def prepni():
     zapnuty = not zapnuty
     return redirect(url_for('home'))
 
-@app.route('/dopredu')
+#Motor functions
+@app.route('/motor/dopredu')
 def dopredu():
     if zapnuty:
         p.forward(rychlost)
-    return redirect(url_for('home'))
+        global current_action
+        current_action = p.forward
+    return jsonify(response="ok")
 
-@app.route('/stop')
+@app.route('/motor/stop')
 def stop():
     if zapnuty:
         p.stop()
-    return redirect(url_for('home'))
+        global current_action
+        current_action = None
+    return jsonify(response="ok")
+
+@app.route('/motor/dozadu')
+def dozadu():
+    if zapnuty:
+        p.reverse(rychlost)
+        global current_action
+        current_action = p.reverse
+    return jsonify(response="ok")
+
+@app.route('/motor/zrychli')
+def zrychli():
+    if zapnuty:
+        rychlost = rychlost + 10
+        if rychlost > 100 :
+            rychlost = 100
+        if current_action is not None:
+            current_action(rychlost)
+    return jsonify(response="ok")
+
+@app.route('/motor/zpomal')
+def zpomal():
+    if zapnuty:
+        rychlost = rychlost - 10
+        if rychlost < 1 :
+            rychlost = 0
+        if current_action is not None:
+            current_action(rychlost)
+    return jsonify(response="ok")

@@ -4,13 +4,22 @@
 <head>
     <meta charset="utf-8" />
     <title>Ovladani robota Maliny</title>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script src="{{url_for('static', filename='buttons.js'}}"></script>
+
 </head>
 <body>
     <h1>Ahoj, vitej na strance ovladani robota Maliny</h1>
     {% if zapnuty %}
     <a href="{{url_for('prepni')}}">Vypnout Malinu</a><br />
-    <a href="{{url_for('dopredu')}}">Dopredu</a><br />
-    <a href="{{url_for('stop')}}">Zastav</a><br />
+
+    <button id="bdopredu">Dopredu</button>
+    <button id="bstop">Stop</button>
+    <button id="bdozadu">Dozadu</button>
+
+
+    <button id="bzrychli">Zrychli</button>
+    <button id="bzpomal">Zpomal</button>
     {% else %}
     <a href="{{url_for('prepni')}}">Zapnout Malinu</a>
     {% endif %}
