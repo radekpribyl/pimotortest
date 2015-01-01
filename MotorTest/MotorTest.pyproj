@@ -57,7 +57,7 @@
   <ItemGroup>
     <Content Include="servod" />
     <Content Include="sgh_PCF8591P.pyc" />
-    <Content Include="webapp\templates\Index.html" />
+    <Content Include="webapp\templates\index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="webapp\" />
