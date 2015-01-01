@@ -28,6 +28,18 @@
     <Compile Include="Adafruit_PWM_Servo_Driver.py" />
     <Compile Include="MotorTest.py" />
     <Compile Include="pi2go.py" />
+    <Compile Include="runwebserver.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="webapp\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="webapp\views.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="webapp\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
@@ -45,6 +57,12 @@
   <ItemGroup>
     <Content Include="servod" />
     <Content Include="sgh_PCF8591P.pyc" />
+    <Content Include="webapp\templates\Index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="webapp\" />
+    <Folder Include="webapp\templates\" />
+    <Folder Include="webapp\static\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
