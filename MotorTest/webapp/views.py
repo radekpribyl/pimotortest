@@ -11,7 +11,7 @@ rychlost = 30
 
 @app.route('/')
 def home():
-    return render_template('index.html', zapnuty = zapnuty)
+    return render_template('Index.html', zapnuty = zapnuty)
 
 @app.route('/prepni')
 def prepni():
