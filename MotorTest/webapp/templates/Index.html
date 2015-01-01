@@ -8,11 +8,11 @@
 <body>
     <h1>Ahoj, vitej na strance ovladani robota Maliny</h1>
     {% if zapnuty %}
-    <a href="{{url_for('prepni')}}>Vypnout Malinu</a><br />
-    <a href="{{url_for('dopredu')}}>Dopredu</a><br />
+    <a href="{{url_for('prepni')}}">Vypnout Malinu</a><br />
+    <a href="{{url_for('dopredu')}}">Dopredu</a><br />
     <a href="{{url_for('stop')}}">Zastav</a><br />
     {% else %}
-    <a href="{{url_for('prepni')}}>Zapnout Malinu</a>
+    <a href="{{url_for('prepni')}}">Zapnout Malinu</a>
     {% endif %}
 
 </body>
