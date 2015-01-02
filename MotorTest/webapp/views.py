@@ -2,75 +2,22 @@ from webapp import app
 
 from flask import render_template, url_for, redirect, jsonify
 
-import pi2go as p
+#import pi2go as p
+#import pi2gomock as p
+p=app.config["ROBOT"]
 
 #, request, jsonify, abort, make_response, url_for, redirect
 
-zapnuty = False
-rychlost = 30
-current_action = None
-
 @app.route('/')
 def home():
-    return render_template('Index.html', zapnuty = zapnuty)
+    config = {"zapnuty" : p.isRobotInitiated, "rychlost" : p.currentSpeed}
+    return render_template('Index.html', config = config)
 
 @app.route('/prepni')
 def prepni():
-    global zapnuty
-    if zapnuty:
+    if p.isRobotInitiated:
         p.cleanup()
     else:
         p.init()
-    zapnuty = not zapnuty
+    p.isRobotInitiated = not p.isRobotInitiated
     return redirect(url_for('home'))
-
-#Motor functions
-@app.route('/motor/dopredu')
-def dopredu():
-    if zapnuty:
-        p.forward(rychlost)
-        global current_action
-        current_action = p.forward
-    return jsonify(response="ok")
-
-@app.route('/motor/stop')
-def stop():
-    if zapnuty:
-        p.stop()
-        global current_action
-        current_action = None
-    return jsonify(response="ok")
-
-@app.route('/motor/dozadu')
-def dozadu():
-    if zapnuty:
-        p.reverse(rychlost)
-        global current_action
-        current_action = p.reverse
-    return jsonify(response="ok")
-
-@app.route('/motor/zrychli')
-def zrychli():
-    if zapnuty:
-        global rychlost
-        rychlost = rychlost + 10
-        if rychlost > 100 :
-            rychlost = 100
-        print "current action is: %s" % (current_action)
-        if current_action is not None:
-            print "calling %s %s" % (current_action, rychlost)
-            current_action(rychlost)
-    return jsonify(response="ok")
-
-@app.route('/motor/zpomal')
-def zpomal():
-    if zapnuty:
-        global rychlost
-        rychlost = rychlost - 10
-        if rychlost < 1 :
-            rychlost = 0
-        print "current action is: %s" % (current_action)
-        if current_action is not None:
-            print "calling %s %s" % (current_action, rychlost)
-            current_action(rychlost)
-    return jsonify(response="ok")

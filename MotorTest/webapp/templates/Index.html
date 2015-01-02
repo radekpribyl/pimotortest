@@ -2,27 +2,86 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ovladani robota Maliny</title>
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
-    <script src="{{url_for('static', filename='buttons.js')}}"></script>
-
+    <!--<link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.1/css/bootstrap-theme.min.css">-->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/malina.css')}}" />
 </head>
 <body>
-    <h1>Ahoj, vitej na strance ovladani robota Maliny</h1>
-    {% if zapnuty %}
+    <h2>Ahoj, vitej na strance ovladani robota Maliny</h2>
+    {% if config["zapnuty"] %}
     <a href="{{url_for('prepni')}}">Vypnout Malinu</a><br />
+    <div class="container" style="margin-left:0">
+        <div class="row">
+            <div class="col-md-2 col-xs-4">
+                <div class="row row-header">
+                    Ovladani smeru
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 col-xs-4 col-xs-offset-4 centered">
+                        <button type="button" id="bdopredu" class="btn-lg btn btn-success">
+                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 centered">
+                        <button type="button" class="btn btn-lg btn-success" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 centered">
+                        <button type="button" id="bstop" class="btn-lg btn btn-warning">
+                            <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 centered">
+                        <button type="button" class="btn btn-lg btn-success" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4  col-xs-4 col-xs-offset-4 centered">
+                        <button type="button" id="bdozadu" class="btn btn-lg btn-success">
+                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-3">
+                <div class="row row-header">Ovladani rychlosti</div>
+                <div class="row centered">
+                    <button type="button" id="bzrychli" class="btn btn-lg btn-success" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="row centered">
+                    <div class="col-xs-12 adjusted-text">
+                        Rychlost:<span id="srychlost">{{config["rychlost"]}}</span>
+                    </div>
+                </div>
+                <div class="row centered">
+                    <button type="button" id="bzpomal" class="btn btn-lg btn-success" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-3 row-header">
+                Vysledky senzoru
+            </div>
+        </div>
+    </div>
 
-    <button id="bdopredu">Dopredu</button>
-    <button id="bstop">Stop</button>
-    <button id="bdozadu">Dozadu</button>
-
-
-    <button id="bzrychli">Zrychli</button>
-    <button id="bzpomal">Zpomal</button>
     {% else %}
     <a href="{{url_for('prepni')}}">Zapnout Malinu</a>
     {% endif %}
-
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+    <script src="{{url_for('static', filename='js/buttons.js')}}"></script>
 </body>
 </html>

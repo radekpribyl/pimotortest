@@ -14,10 +14,14 @@ $(document).ready(function () {
     })
 
     $("#bzrychli").click(function () {
-        $.get("/motor/zrychli")
+        $.get("/motor/zrychli", function( data ) {
+            $("#srychlost").html(data.rychlost);
+        })
     })
 
     $("#bzpomal").click(function () {
-        $.get("/motor/zpomal")
+        $.get("/motor/zpomal", function( data ) {
+            $("#srychlost").html(data.rychlost);
+        })
     })
 })

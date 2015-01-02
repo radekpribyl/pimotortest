@@ -4,4 +4,6 @@ from flask import Flask
 app = Flask(__name__)
 app.config.from_object('webapp.config.Config')
 
-import webapp.views
+def import_views():
+    import webapp.views
+    import webapp.motorapi

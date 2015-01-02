@@ -124,6 +124,10 @@ from sgh_PCF8591P import sgh_PCF8591P
 import ptvsd
 ptvsd.enable_attach(secret = 'malina')
 
+#My variables
+isRobotInitiated = False
+currentSpeed = 30
+
 # Define Type of Pi2Go
 PGNone = 0
 PGFull = 1

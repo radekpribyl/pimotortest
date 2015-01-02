@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d91f6a45-902d-4ccb-8932-6d04ee1bdc92</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>MotorTest.py</StartupFile>
+    <StartupFile>runflaskoncomputer.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,10 +28,19 @@
     <Compile Include="Adafruit_PWM_Servo_Driver.py" />
     <Compile Include="MotorTest.py" />
     <Compile Include="pi2go.py" />
-    <Compile Include="runwebserver.py">
+    <Compile Include="runflaskoncomputer.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="runflaskonmalina.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="webapp\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="pi2gomock.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="webapp\motorapi.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="webapp\views.py">
@@ -57,11 +66,22 @@
   <ItemGroup>
     <Content Include="servod" />
     <Content Include="sgh_PCF8591P.pyc" />
-    <Content Include="webapp\static\buttons.js" />
+    <Content Include="webapp\static\css\malina.css" />
+    <Content Include="webapp\static\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="webapp\static\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="webapp\static\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="webapp\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="webapp\static\css\bootstrap-theme.css" />
+    <Content Include="webapp\static\css\bootstrap.css" />
+    <Content Include="webapp\static\js\bootstrap.js" />
+    <Content Include="webapp\static\js\buttons.js" />
     <Content Include="webapp\templates\Index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="webapp\" />
+    <Folder Include="webapp\static\fonts\" />
+    <Folder Include="webapp\static\css\" />
+    <Folder Include="webapp\static\js\" />
     <Folder Include="webapp\templates\" />
     <Folder Include="webapp\static\" />
   </ItemGroup>
