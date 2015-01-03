@@ -16,3 +16,15 @@ def reverse(speed):
 
 def stop():
     pass
+
+def spinLeft(speed):
+    pass
+
+def spinRight(speed):
+    pass
+
+def turnForward(leftSpeed, rightSpeed):
+    pass
+
+def turnreverse(leftSpeed, rightSpeed):
+    pass

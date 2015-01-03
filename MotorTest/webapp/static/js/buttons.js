@@ -13,6 +13,14 @@ $(document).ready(function () {
         $.get("/motor/dozadu")
     })
 
+    $("#brotujedoleva").click(function () {
+        $.get("/motor/rotujvlevo")
+    })
+
+    $("#brotujdoprava").click(function () {
+        $.get("/motor/rotujvpravo")
+    })
+
     $("#bzrychli").click(function () {
         $.get("/motor/zrychli", function( data ) {
             $("#srychlost").html(data.rychlost);
