@@ -10,6 +10,7 @@
 
 .centered {
     text-align:center;
+    line-height:1;
 }
 .adjusted-text{
     padding-top:16px;

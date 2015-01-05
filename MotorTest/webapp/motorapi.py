@@ -6,15 +6,15 @@ current_action = None
 
 #Helper functions
 def provedAkci(akce):
-    akce(p.currentSpeed)
-    global current_action
-    current_action = akce
+    if p.isRobotInitiated:
+        akce(p.currentSpeed)
+        global current_action
+        current_action = akce
 
 #Motor functions
 @app.route('/motor/dopredu')
 def dopredu():
-    if p.isRobotInitiated:
-        provedAkci(p.forward)
+    provedAkci(p.forward)
     return jsonify(response="ok")
 
 @app.route('/motor/stop')
@@ -27,22 +27,39 @@ def stop():
 
 @app.route('/motor/dozadu')
 def dozadu():
-    if p.isRobotInitiated:
-        provedAkci(p.reverse)
+    provedAkci(p.reverse)
     return jsonify(response="ok")
 
 @app.route('/motor/rotujvlevo')
 def rotujvlevo():
-    if p.isRobotInitiated:
-        provedAkci(p.spinLeft)
+    provedAkci(p.spinLeft)
     return jsonify(response="ok")
 
 @app.route('/motor/rotujvpravo')
 def rotujvpravo():
-    if p.isRobotInitiated:
-        provedAkci(p.spinRight)
+    provedAkci(p.spinRight)
     return jsonify(response="ok")
 
+
+@app.route('/motor/zatocvpredvpravo')
+def zatocvpredvpravo():
+    provedAkci(p.turnForwardRight)
+    return jsonify(response="ok")
+
+@app.route('/motor/zatocvpredvlevo')
+def zatocvpredvlevo():
+    provedAkci(p.turnForwardLeft)
+    return jsonify(response="ok")
+
+@app.route('/motor/zatocvzadvlevo')
+def zatocvzadvlevo():
+    provedAkci(p.turnReverseLeft)
+    return jsonify(response="ok")
+
+@app.route('/motor/zatocvzadvpravo')
+def zatocvzadvpravo():
+    provedAkci(p.turnReverseRight)
+    return jsonify(response="ok")
 
 @app.route('/motor/zrychli')
 def zrychli():

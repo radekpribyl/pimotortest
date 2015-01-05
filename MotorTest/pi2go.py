@@ -33,6 +33,10 @@
 # spinRight(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100
 # turnForward(leftSpeed, rightSpeed): Moves forwards in an arc by setting different speeds. 0 <= leftSpeed,rightSpeed <= 100
 # turnreverse(leftSpeed, rightSpeed): Moves backwards in an arc by setting different speeds. 0 <= leftSpeed,rightSpeed <= 100
+# turnForwardLeft(speed):
+# turnForwardRight(speed):
+# turnReverseLeft(speed):
+# turnReverseRight(speed):
 # go(leftSpeed, rightSpeed): controls motors in both directions independently using different positive/negative speeds. -100<= leftSpeed,rightSpeed <= 100
 # go(speed): controls motors in both directions together with positive/negative speed parameter. -100<= speed <= 100
 #======================================================================
@@ -332,6 +336,18 @@ def turnReverse(leftSpeed, rightSpeed):
     b.ChangeDutyCycle(rightSpeed)
     q.ChangeFrequency(leftSpeed + 5)
     b.ChangeFrequency(rightSpeed + 5)
+
+def turnForwardLeft(speed):
+    turnForward(speed / 2, speed)
+
+def turnForwardRight(speed):
+    turnForward(speed, speed / 2)
+
+def turnReverseLeft(speed):
+    turnReverse(speed / 2, speed)
+
+def turnReverseRight(speed):
+    turnReverse(speed, speed / 2)
 
 # go(leftSpeed, rightSpeed): controls motors in both directions independently using different positive/negative speeds. -100<= leftSpeed,rightSpeed <= 100
 def go(leftSpeed, rightSpeed):

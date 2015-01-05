@@ -13,42 +13,104 @@
 </head>
 <body>
     <h2>Ahoj, vitej na strance ovladani robota Maliny</h2>
-    {% if config["zapnuty"] %}
-    <a href="{{url_for('prepni')}}">Vypnout Malinu</a><br />
-    <div class="container" style="margin-left:0">
+
+    <div class="container" style="margin-left:5px">
+        <a href="{{url_for('prepni')}}" class="btn btn-danger">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 width="32px" height="32px" viewBox="0 0 512 512">
+                <path fill="white" d="M320,73.294v67.979c18.103,7.902,34.75,19.204,49.137,33.59C399.358,205.083,416,245.263,416,288
+	c0,42.736-16.643,82.917-46.863,113.137C338.917,431.357,298.738,448,256,448c-42.738,0-82.917-16.643-113.137-46.863
+	C112.643,370.917,96,330.736,96,288c0-42.737,16.643-82.917,46.863-113.137c14.387-14.387,31.034-25.689,49.137-33.591V73.294
+	C99.476,100.834,32,186.53,32,288c0,123.712,100.289,224,224,224c123.712,0,224-100.288,224-224
+	C480,186.53,412.525,100.834,320,73.294z M224,0h64v256h-64V0z" />
+            </svg>
+
+        </a><br />
+        {% if config["zapnuty"] %}
         <div class="row">
             <div class="col-md-2 col-xs-4">
                 <div class="row row-header">
                     Ovladani smeru
                 </div>
                 <div class="row">
-                    <div class="col-md-4 col-md-offset-4 col-xs-4 col-xs-offset-4 centered">
-                        <button type="button" id="bdopredu" class="btn-lg btn btn-success" aria-label="Jed vpred">
-                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    <div class="col-md4 col-xs-4 centered">
+                        <button type="button" id="bvpredvlevo" class="btn btn-success">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="rotate(-90 32 32)" d="M13.442,56.137L13.442,56.137c-5.138,0-8.822-0.7-8.978-0.731l0.205-2.137c9.039,0,15.523-2.361,19.27-7.013
+												  c4.24-5.263,3.781-12.11,3.463-14.477H11.706L35.621,7.863l23.914,23.916H44.453C42.553,52.94,24.281,56.137,13.442,56.137z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 centered">
+                        <button type="button" id="bdopredu" class="btn btn-success">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill=" white" d="M55.358,40.846L32.413,14.927c-0.445-0.502-1.164-0.503-1.61-0.002L7.711,40.847c-0.446,0.502-0.265,0.906,0.405,0.906
+	h14.551v13.338c0,0.67,0.543,1.211,1.212,1.211h15.309c0.669,0,1.212-0.542,1.212-1.211V41.753H54.95
+	C55.62,41.753,55.803,41.348,55.358,40.846z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="col-md4 col-xs-4 centered">
+                        <button type="button" id="bvredvpravo" class="btn btn-success">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="translate(64, 0) scale(-1, 1) rotate(-90 32 32)" d="M13.442,56.137L13.442,56.137c-5.138,0-8.822-0.7-8.978-0.731l0.205-2.137c9.039,0,15.523-2.361,19.27-7.013
+												  c4.24-5.263,3.781-12.11,3.463-14.477H11.706L35.621,7.863l23.914,23.916H44.453C42.553,52.94,24.281,56.137,13.442,56.137z" />
+                            </svg>
                         </button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4 col-xs-4 centered">
-                        <button type="button" id="brotujedoleva" class="btn btn-lg btn-success" aria-label="Rotuj doleva">
-                            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                        <button type="button" id="brotujedoleva" class="btn btn-success" aria-label="Rotuj doleva">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="rotate(-90 32 32)" d="M55.358,40.846L32.413,14.927c-0.445-0.502-1.164-0.503-1.61-0.002L7.711,40.847c-0.446,0.502-0.265,0.906,0.405,0.906
+	h14.551v13.338c0,0.67,0.543,1.211,1.212,1.211h15.309c0.669,0,1.212-0.542,1.212-1.211V41.753H54.95
+	C55.62,41.753,55.803,41.348,55.358,40.846z" />
+                            </svg>
                         </button>
                     </div>
                     <div class="col-md-4 col-xs-4 centered">
-                        <button type="button" id="bstop" class="btn-lg btn btn-warning" aria-label="Zastav">
-                            <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                        <button type="button" id="bstop" class="btn btn-warning" aria-label="Zastav">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 512 512">
+                                <path fill="white" d="M256,0C114.615,0,0,114.615,0,256s114.615,256,256,256s256-114.615,256-256S397.385,0,256,0z M256,464
+	c-114.875,0-208-93.125-208-208S141.125,48,256,48s208,93.125,208,208S370.875,464,256,464z M160,160h192v192H160V160z" />
+                            </svg>
                         </button>
                     </div>
                     <div class="col-md-4 col-xs-4 centered">
-                        <button type="button" id="brotujdoprava" class="btn btn-lg btn-success" aria-label="Rotuj doprava">
-                            <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                        <button type="button" id="brotujdoprava" class="btn btn-success" aria-label="Rotuj doprava">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="rotate(90 32 32)" d="M55.358,40.846L32.413,14.927c-0.445-0.502-1.164-0.503-1.61-0.002L7.711,40.847c-0.446,0.502-0.265,0.906,0.405,0.906
+	h14.551v13.338c0,0.67,0.543,1.211,1.212,1.211h15.309c0.669,0,1.212-0.542,1.212-1.211V41.753H54.95
+	C55.62,41.753,55.803,41.348,55.358,40.846z" />
+                            </svg>
                         </button>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4 col-md-offset-4  col-xs-4 col-xs-offset-4 centered">
-                        <button type="button" id="bdozadu" class="btn btn-lg btn-success">
-                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    <div class="col-md4 col-xs-4 centered">
+                        <button type="button" id="bvzadvlevo" class="btn btn-success">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="translate(0, 64) scale(1, -1) rotate(-90 32 32)" d="M13.442,56.137L13.442,56.137c-5.138,0-8.822-0.7-8.978-0.731l0.205-2.137c9.039,0,15.523-2.361,19.27-7.013
+												  c4.24-5.263,3.781-12.11,3.463-14.477H11.706L35.621,7.863l23.914,23.916H44.453C42.553,52.94,24.281,56.137,13.442,56.137z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 centered">
+                        <button type="button" id="bdozadu" class="btn btn-success">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="rotate(180 32 32)" d="M55.358,40.846L32.413,14.927c-0.445-0.502-1.164-0.503-1.61-0.002L7.711,40.847c-0.446,0.502-0.265,0.906,0.405,0.906
+	h14.551v13.338c0,0.67,0.543,1.211,1.212,1.211h15.309c0.669,0,1.212-0.542,1.212-1.211V41.753H54.95
+	C55.62,41.753,55.803,41.348,55.358,40.846z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="col-md4 col-xs-4 centered">
+                        <button type="button" id="bvzadvpravo" class="bt-lg btn btn-success">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 64 64">
+                                <path fill="white" transform="rotate(90 32 32)" d="M13.442,56.137L13.442,56.137c-5.138,0-8.822-0.7-8.978-0.731l0.205-2.137c9.039,0,15.523-2.361,19.27-7.013
+												  c4.24-5.263,3.781-12.11,3.463-14.477H11.706L35.621,7.863l23.914,23.916H44.453C42.553,52.94,24.281,56.137,13.442,56.137z" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -56,8 +118,14 @@
             <div class="col-md-2 col-xs-3">
                 <div class="row row-header">Ovladani rychlosti</div>
                 <div class="row centered">
-                    <button type="button" id="bzrychli" class="btn btn-lg btn-success" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                    <button type="button" id="bzrychli" class="btn btn-success" aria-label="Left Align">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 100 100">
+                            <path fill="white" transform="rotate(90, 50, 50)" d="M53.475,78.402c2.041,2.041,2.041,5.352,0,7.393c-2.041,2.042-5.351,2.042-7.393,0l-32.1-32.099
+	c-1.02-1.021-1.53-2.358-1.53-3.696s0.511-2.676,1.53-3.696l32.1-32.099c2.042-2.042,5.352-2.042,7.393,0
+	c2.041,2.041,2.041,5.351,0,7.393L25.073,50L53.475,78.402z M57.614,50l28.402-28.402c2.041-2.042,2.041-5.352,0-7.393
+	c-2.041-2.042-5.351-2.042-7.393,0l-32.1,32.099c-1.02,1.021-1.53,2.358-1.53,3.696s0.511,2.676,1.53,3.696l32.1,32.099
+	c2.042,2.042,5.352,2.042,7.393,0c2.041-2.041,2.041-5.352,0-7.393L57.614,50z" />
+                        </svg>
                     </button>
                 </div>
                 <div class="row centered">
@@ -66,8 +134,14 @@
                     </div>
                 </div>
                 <div class="row centered">
-                    <button type="button" id="bzpomal" class="btn btn-lg btn-success" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    <button type="button" id="bzpomal" class="btn btn-success" aria-label="Left Align">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 100 100">
+                            <path fill="white" transform="rotate(-90, 50, 50)" d="M53.475,78.402c2.041,2.041,2.041,5.352,0,7.393c-2.041,2.042-5.351,2.042-7.393,0l-32.1-32.099
+	c-1.02-1.021-1.53-2.358-1.53-3.696s0.511-2.676,1.53-3.696l32.1-32.099c2.042-2.042,5.352-2.042,7.393,0
+	c2.041,2.041,2.041,5.351,0,7.393L25.073,50L53.475,78.402z M57.614,50l28.402-28.402c2.041-2.042,2.041-5.352,0-7.393
+	c-2.041-2.042-5.351-2.042-7.393,0l-32.1,32.099c-1.02,1.021-1.53,2.358-1.53,3.696s0.511,2.676,1.53,3.696l32.1,32.099
+	c2.042,2.042,5.352,2.042,7.393,0c2.041-2.041,2.041-5.352,0-7.393L57.614,50z" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -75,11 +149,9 @@
                 Vysledky senzoru
             </div>
         </div>
-    </div>
 
-    {% else %}
-    <a href="{{url_for('prepni')}}">Zapnout Malinu</a>
-    {% endif %}
+        {% endif %}
+    </div>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
     <script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='js/buttons.js')}}"></script>

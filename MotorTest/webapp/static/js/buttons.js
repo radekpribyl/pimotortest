@@ -21,6 +21,22 @@ $(document).ready(function () {
         $.get("/motor/rotujvpravo")
     })
 
+    $("#bvpredvlevo").click(function () {
+        $.get("/motor/zatocvpredvlevo")
+    })
+
+    $("#bvredvpravo").click(function () {
+        $.get("/motor/zatocvpredvpravo")
+    })
+
+    $("#bvzadvlevo").click(function () {
+        $.get("/motor/zatocvzadvlevo")
+    })
+
+    $("#bvzadvpravo").click(function () {
+        $.get("/motor/zatocvzadvpravo")
+    })
+
     $("#bzrychli").click(function () {
         $.get("/motor/zrychli", function( data ) {
             $("#srychlost").html(data.rychlost);

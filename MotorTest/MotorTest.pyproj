@@ -66,6 +66,7 @@
   <ItemGroup>
     <Content Include="servod" />
     <Content Include="sgh_PCF8591P.pyc" />
+    <Content Include="webapp\static\css\bootstrap.css.map" />
     <Content Include="webapp\static\css\malina.css" />
     <Content Include="webapp\static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="webapp\static\fonts\glyphicons-halflings-regular.svg" />
