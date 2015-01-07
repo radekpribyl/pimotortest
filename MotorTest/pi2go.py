@@ -6,6 +6,8 @@
 # Updated June 2014 to include Pi2Go-Lite within same framework
 # Copyright 4tronix
 #
+# Adjusted by Radek Pribyl to work for Pi2Go-Lite with specific model and front-end
+#
 # This code is in the public domain and may be freely copied and used
 # No warranty is provided or implied
 #
@@ -26,7 +28,7 @@
 # Motor Functions
 # (Both Versions)
 #
-# stop(): Stops both motors
+# stop(*args): Stops both motors; It support arguments which are ignored but it unifies the interface
 # forward(speed): Sets both motors to move forward at speed. 0 <= speed <= 100
 # reverse(speed): Sets both motors to reverse at speed. 0 <= speed <= 100
 # spinLeft(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100
@@ -276,12 +278,13 @@ def version():
 # Motor Functions
 # (both versions)
 #
-# stop(): Stops both motors
-def stop():
+# stop(): Stops both motors; The arguments are ignored but it unifies the interface
+def stop(*args):
     p.ChangeDutyCycle(0)
     q.ChangeDutyCycle(0)
     a.ChangeDutyCycle(0)
     b.ChangeDutyCycle(0)
+
     
 # forward(speed): Sets both motors to move forward at speed. 0 <= speed <= 100
 def forward(speed):

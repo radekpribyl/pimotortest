@@ -14,13 +14,14 @@ def robotimport():
 class Config(object):
     DEBUG = False
     TESTING = False
+    SECRET_KEY = 'fdsafsfdsafdsafh;ljh'
 
 class MalinaConfig(Config):
     ROBOT = robotimport()
 
 class TestingConfig(Config):
-    DEBUG = True
-    TESTING = True
+    #DEBUG = True
+    #TESTING = True
     ROBOT = __import__('pi2gomock')
     #ROBOT = robotimport()
 

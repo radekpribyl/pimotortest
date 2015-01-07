@@ -1,3 +1,4 @@
+from __future__ import print_function
 #My variables
 isRobotInitiated = False
 currentSpeed = 30
@@ -9,34 +10,34 @@ def cleanup():
     pass
 
 def forward(speed):
-    pass
+    print("Vpred: " + str(speed))
 
 def reverse(speed):
-    pass
+    print("Vzad: " + str(speed))
 
-def stop():
-    pass
+def stop(*args):
+    print("Stop")
 
 def spinLeft(speed):
-    pass
+    print("Rotuj doleva: " + str(speed))
 
 def spinRight(speed):
-    pass
+    print("Rotuj doprava: " + str(speed))
 
 def turnForward(leftSpeed, rightSpeed):
-    pass
+    print("Zatoc dopredu, leva rychlost: " + str(leftSpeed) + " prava: " + str(rightSpeed))
 
 def turnreverse(leftSpeed, rightSpeed):
-    pass
+    print("Zatoc dozadu, leva rychlost: " + str(leftSpeed) + " prava: " + str(rightSpeed))
 
 def turnForwardLeft(speed):
-    pass
+    print("Zatoc dopredu doleva: " + str(speed))
 
 def turnForwardRight(speed):
-    pass
+    print("Zatoc dopredu dopredu: " + str(speed))
 
 def turnReverseLeft(speed):
-    pass
+    print("Zatoc dozadu doleva: " + str(speed))
 
 def turnReverseRight(speed):
-    pass
+    print("Zatoc dozadu doprava: " + str(speed))

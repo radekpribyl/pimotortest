@@ -2,50 +2,53 @@
 /// <reference path="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0-vsdoc.js" />
 
 $(document).ready(function () {
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/malina');
+
+    socket.on('rychlost', function (data) {
+        console.log(data);
+        $("#srychlost").html(data.rychlost);
+    })
+
     $("#bdopredu").click(function () {
-        $.get("/motor/dopredu")
+        socket.emit('motor', { akce: 'dopredu' });
     })
     $("#bstop").click(function () {
-        $.get("/motor/stop")
+        socket.emit('motor', { akce: 'stop' });
     })
 
     $("#bdozadu").click(function () {
-        $.get("/motor/dozadu")
+        socket.emit('motor', { akce: 'dozadu' });
     })
 
     $("#brotujedoleva").click(function () {
-        $.get("/motor/rotujvlevo")
+        socket.emit('motor', { akce: 'rotujvlevo' });
     })
 
     $("#brotujdoprava").click(function () {
-        $.get("/motor/rotujvpravo")
+        socket.emit('motor', { akce: 'rotujvpravo' });
     })
 
     $("#bvpredvlevo").click(function () {
-        $.get("/motor/zatocvpredvlevo")
+        socket.emit('motor', { akce: 'zatocvpredvlevo' });
     })
 
     $("#bvredvpravo").click(function () {
-        $.get("/motor/zatocvpredvpravo")
+        socket.emit('motor', { akce: 'zatocvpredvpravo' });
     })
 
     $("#bvzadvlevo").click(function () {
-        $.get("/motor/zatocvzadvlevo")
+        socket.emit('motor', { akce: 'zatocvzadvlevo' });
     })
 
     $("#bvzadvpravo").click(function () {
-        $.get("/motor/zatocvzadvpravo")
+        socket.emit('motor', { akce: 'zatocvzadvpravo' });
     })
 
     $("#bzrychli").click(function () {
-        $.get("/motor/zrychli", function( data ) {
-            $("#srychlost").html(data.rychlost);
-        })
+        socket.emit('rychlost', { akce: 'zrychli' });
     })
 
     $("#bzpomal").click(function () {
-        $.get("/motor/zpomal", function( data ) {
-            $("#srychlost").html(data.rychlost);
-        })
+        socket.emit('rychlost', { akce: 'zpomal' });
     })
 })

@@ -28,6 +28,9 @@
     <Compile Include="Adafruit_PWM_Servo_Driver.py" />
     <Compile Include="MotorTest.py" />
     <Compile Include="pi2go.py" />
+    <Compile Include="regPythonVersion.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runflaskoncomputer.py">
       <SubType>Code</SubType>
     </Compile>

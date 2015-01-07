@@ -1,4 +1,4 @@
-from webapp import app, import_views
+from webapp import app, import_views, socketio
 from webapp.config import MalinaConfig
 from os import environ
 
@@ -11,5 +11,7 @@ if __name__ == '__main__':
     #    PORT = int(environ.get('SERVER_PORT', '5555'))
     #except ValueError:
     #    PORT = 5555
-    PORT = 5555
-    app.run(host='0.0.0.0', port=PORT)
+    #PORT = 5555
+    #app.run(host='0.0.0.0', port=PORT)
+
+    socketio.run(app, host='0.0.0.0')

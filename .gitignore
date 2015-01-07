@@ -8,6 +8,7 @@
 
 #Python virtual environment
 env/
+*.pyc
 
 # Build results
 [Dd]ebug/
