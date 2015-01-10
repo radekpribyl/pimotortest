@@ -122,7 +122,11 @@
 
 
 # Import all necessary libraries
-import RPi.GPIO as GPIO, sys, threading, time, os
+import RPi.GPIO as GPIO
+import sys
+import threading
+import time
+import os
 from Adafruit_PWM_Servo_Driver import PWM
 from sgh_PCF8591P import sgh_PCF8591P
 
@@ -187,7 +191,7 @@ countR = 0
 #======================================================================
 # General Functions
 #
-# init(). Initialises GPIO pins, switches motors and LEDs Off, etc
+# init().  Initialises GPIO pins, switches motors and LEDs Off, etc
 def init():
     global p, q, a, b, pwm, pcfADC, PGType
     PGType = PGFull
@@ -255,7 +259,7 @@ def init():
         running = True
 
 
-# cleanup(). Sets all motors and LEDs off and sets GPIO to standard values
+# cleanup().  Sets all motors and LEDs off and sets GPIO to standard values
 def cleanup():
     global running
     running = False
@@ -266,7 +270,8 @@ def cleanup():
     GPIO.cleanup()
 
 
-# version(). Returns 1 for Full Pi2Go, and 2 for Pi2Go-Lite. Invalid until after init() has been called
+# version().  Returns 1 for Full Pi2Go, and 2 for Pi2Go-Lite.  Invalid until
+# after init() has been called
 def version():
     return PGType
 
@@ -278,16 +283,17 @@ def version():
 # Motor Functions
 # (both versions)
 #
-# stop(): Stops both motors; The arguments are ignored but it unifies the interface
-def stop(*args):
+# stop(): Stops both motors; The arguments are ignored but it unifies the
+# interface
+def stop( *args ):
     p.ChangeDutyCycle(0)
     q.ChangeDutyCycle(0)
     a.ChangeDutyCycle(0)
     b.ChangeDutyCycle(0)
 
     
-# forward(speed): Sets both motors to move forward at speed. 0 <= speed <= 100
-def forward(speed):
+# forward(speed): Sets both motors to move forward at speed.  0 <= speed <= 100
+def forward( speed ):
     p.ChangeDutyCycle(speed * 0.927)
     q.ChangeDutyCycle(0)
     a.ChangeDutyCycle(speed)
@@ -295,8 +301,8 @@ def forward(speed):
     p.ChangeFrequency(100)
     a.ChangeFrequency(100)
     
-# reverse(speed): Sets both motors to reverse at speed. 0 <= speed <= 100
-def reverse(speed):
+# reverse(speed): Sets both motors to reverse at speed.  0 <= speed <= 100
+def reverse( speed ):
     p.ChangeDutyCycle(0)
     q.ChangeDutyCycle(speed)
     a.ChangeDutyCycle(0)
@@ -304,8 +310,9 @@ def reverse(speed):
     q.ChangeFrequency(speed + 5)
     b.ChangeFrequency(speed + 5)
 
-# spinLeft(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100
-def spinLeft(speed):
+# spinLeft(speed): Sets motors to turn opposite directions at speed.  0 <=
+# speed <= 100
+def spinLeft( speed ):
     p.ChangeDutyCycle(0)
     q.ChangeDutyCycle(speed)
     a.ChangeDutyCycle(speed)
@@ -313,8 +320,9 @@ def spinLeft(speed):
     q.ChangeFrequency(speed + 5)
     a.ChangeFrequency(speed + 5)
     
-# spinRight(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100
-def spinRight(speed):
+# spinRight(speed): Sets motors to turn opposite directions at speed.  0 <=
+# speed <= 100
+def spinRight( speed ):
     p.ChangeDutyCycle(speed)
     q.ChangeDutyCycle(0)
     a.ChangeDutyCycle(0)
@@ -322,8 +330,9 @@ def spinRight(speed):
     p.ChangeFrequency(speed + 5)
     b.ChangeFrequency(speed + 5)
     
-# turnForward(leftSpeed, rightSpeed): Moves forwards in an arc by setting different speeds. 0 <= leftSpeed,rightSpeed <= 100
-def turnForward(leftSpeed, rightSpeed):
+# turnForward(leftSpeed, rightSpeed): Moves forwards in an arc by setting
+# different speeds.  0 <= leftSpeed,rightSpeed <= 100
+def turnForward( leftSpeed, rightSpeed ):
     p.ChangeDutyCycle(leftSpeed)
     q.ChangeDutyCycle(0)
     a.ChangeDutyCycle(rightSpeed)
@@ -331,8 +340,9 @@ def turnForward(leftSpeed, rightSpeed):
     p.ChangeFrequency(leftSpeed + 5)
     a.ChangeFrequency(rightSpeed + 5)
     
-# turnReverse(leftSpeed, rightSpeed): Moves backwards in an arc by setting different speeds. 0 <= leftSpeed,rightSpeed <= 100
-def turnReverse(leftSpeed, rightSpeed):
+# turnReverse(leftSpeed, rightSpeed): Moves backwards in an arc by setting
+# different speeds.  0 <= leftSpeed,rightSpeed <= 100
+def turnReverse( leftSpeed, rightSpeed ):
     p.ChangeDutyCycle(0)
     q.ChangeDutyCycle(leftSpeed)
     a.ChangeDutyCycle(0)
@@ -340,21 +350,22 @@ def turnReverse(leftSpeed, rightSpeed):
     q.ChangeFrequency(leftSpeed + 5)
     b.ChangeFrequency(rightSpeed + 5)
 
-def turnForwardLeft(speed):
+def turn_forward_left( speed ):
     turnForward(speed / 2, speed)
 
-def turnForwardRight(speed):
+def turn_forward_right( speed ):
     turnForward(speed, speed / 2)
 
-def turnReverseLeft(speed):
+def turn_reverse_left( speed ):
     turnReverse(speed / 2, speed)
 
-def turnReverseRight(speed):
+def turn_reverse_right( speed ):
     turnReverse(speed, speed / 2)
 
-# go(leftSpeed, rightSpeed): controls motors in both directions independently using different positive/negative speeds. -100<= leftSpeed,rightSpeed <= 100
-def go(leftSpeed, rightSpeed):
-    if leftSpeed<0:
+# go(leftSpeed, rightSpeed): controls motors in both directions independently
+# using different positive/negative speeds.  -100<= leftSpeed,rightSpeed <= 100
+def go( leftSpeed, rightSpeed ):
+    if leftSpeed < 0:
         p.ChangeDutyCycle(0)
         q.ChangeDutyCycle(abs(leftSpeed))
         q.ChangeFrequency(abs(leftSpeed) + 5)
@@ -362,7 +373,7 @@ def go(leftSpeed, rightSpeed):
         q.ChangeDutyCycle(0)
         p.ChangeDutyCycle(leftSpeed)
         p.ChangeFrequency(leftSpeed + 5)
-    if rightSpeed<0:
+    if rightSpeed < 0:
         a.ChangeDutyCycle(0)
         b.ChangeDutyCycle(abs(rightSpeed))
         p.ChangeFrequency(abs(rightSpeed) + 5)
@@ -371,9 +382,10 @@ def go(leftSpeed, rightSpeed):
         a.ChangeDutyCycle(rightSpeed)
         p.ChangeFrequency(rightSpeed + 5)
 
-# go(speed): controls motors in both directions together with positive/negative speed parameter. -100<= speed <= 100
-def goBoth(speed):
-    if speed<0:
+# go(speed): controls motors in both directions together with positive/negative
+# speed parameter.  -100<= speed <= 100
+def goBoth( speed ):
+    if speed < 0:
         reverse(abs(speed))
     else:
         forward(speed)
@@ -385,7 +397,6 @@ def goBoth(speed):
 #======================================================================
 # Wheel Sensor Functions
 # (Pi2Go-Lite only)
-
 def stopL():
     p.ChangeDutyCycle(0)
     q.ChangeDutyCycle(0)
@@ -414,8 +425,9 @@ def wheelCount():
         lastR = val
 
 
-# stepForward(speed, steps): Moves forward specified number of counts, then stops
-def stepForward(speed, counts):
+# stepForward(speed, steps): Moves forward specified number of counts, then
+# stops
+def stepForward( speed, counts ):
     global countL, countR
     countL = 0
     countR = 0
@@ -431,8 +443,9 @@ def stepForward(speed, counts):
             stopR()
             runR = False
             
-# stepReverse(speed, steps): Moves backward specified number of counts, then stops
-def stepReverse(speed, counts):
+# stepReverse(speed, steps): Moves backward specified number of counts, then
+# stops
+def stepReverse( speed, counts ):
     global countL, countR
     countL = 0
     countR = 0
@@ -449,12 +462,12 @@ def stepReverse(speed, counts):
             runR = False
             
 # stepSpinL(speed, steps): Spins left specified number of counts, then stops
-def stepSpinL(speed, counts):
+def stepSpinL( speed, counts ):
     global countL, countR
     countL = 0
     countR = 0
     spinLeft(speed)
-    while countL<counts or countR<counts:
+    while countL < counts or countR < counts:
         time.sleep(0.002)
         if countL >= counts:
             stopL()
@@ -462,12 +475,12 @@ def stepSpinL(speed, counts):
             stopR()
             
 # stepSpinR(speed, steps): Spins right specified number of counts, then stops
-def stepSpinR(speed, counts):
+def stepSpinR( speed, counts ):
     global countL, countR
     countL = 0
     countR = 0
     spinRight(speed)
-    while countL<counts or countR<counts:
+    while countL < counts or countR < counts:
         time.sleep(0.002)
         if countL >= counts:
             stopL()
@@ -476,7 +489,7 @@ def stepSpinR(speed, counts):
 
 
 # ======= OLD Deprecated Functions =======
-def stepForwardOld(speed, stepsL, stepsR):
+def stepForwardOld( speed, stepsL, stepsR ):
     # TODO don't allow nested call backs
     global leftCount, rightCount, intCountL, intCountR
     GPIO.add_event_detect(lineRight, GPIO.BOTH, callback=rightCounter, bouncetime=5)
@@ -494,7 +507,7 @@ intCountL = 0
 intCountR = 0
 
 # Wheel counter call backs, remove themselves when count reaches zero (I hope!)
-def leftCounterOld(channel):
+def leftCounterOld( channel ):
     global leftCount, lastL, intCountL
     intCountL += 1
     val = GPIO.input(lineLeft)
@@ -505,10 +518,10 @@ def leftCounterOld(channel):
         if leftCount <= 0:
             p.ChangeDutyCycle(0)
             q.ChangeDutyCycle(0)
-            GPIO.remove_event_detect (channel)
+            GPIO.remove_event_detect(channel)
             print "Done left", intCountL
 
-def rightCounterOld(channel):
+def rightCounterOld( channel ):
     global rightCount, lastR, intCountR
     intCountR += 1
     val = GPIO.input(lineRight)
@@ -519,7 +532,7 @@ def rightCounterOld(channel):
         if rightCount <= 0:
             a.ChangeDutyCycle(0)
             b.ChangeDutyCycle(0)
-            GPIO.remove_event_detect (channel)
+            GPIO.remove_event_detect(channel)
             print "Done right", intCountR
 # ======== End of Old deprecated functions =========
 
@@ -531,15 +544,17 @@ def rightCounterOld(channel):
 # RGB LED Functions
 # (Full version only)
 #
-# setLED(LED, Red, Green, Blue): Sets the LED specified to required RGB value. 0 >= LED <= 3; 0 <= R,G,B <= 4095
-def setLED(LED, red, green, blue):
+# setLED(LED, Red, Green, Blue): Sets the LED specified to required RGB value.
+# 0 >= LED <= 3; 0 <= R,G,B <= 4095
+def setLED( LED, red, green, blue ):
     if PGType == PGFull:
         pwm.setPWM(LED * 3 + Red, 0, red)
         pwm.setPWM(LED * 3 + Green, 0, green)
         pwm.setPWM(LED * 3 + Blue, 0, blue)
 
-# setAllLEDs(Red, Green, Blue): Sets all LEDs to required RGB. 0 <= R,G,B <= 4095
-def setAllLEDs (red, green, blue):
+# setAllLEDs(Red, Green, Blue): Sets all LEDs to required RGB.  0 <= R,G,B <=
+# 4095
+def setAllLEDs( red, green, blue ):
   for i in range(4):
     setLED(i, red, green, blue)
 
@@ -553,16 +568,16 @@ def setAllLEDs (red, green, blue):
 #
 # LsetLED(LED, value): Sets the LED specified to OFF == 0 or ON == 1
 # TODO: take value from 0 to 100 and use as percentage PWM value
-def LsetLED (LED, value):
+def LsetLED( LED, value ):
     if PGType == PGLite:
         if value == 0:
             value = 1
         else:
             value = 0
         if LED == 0:
-            GPIO.output (frontLED, value)
+            GPIO.output(frontLED, value)
         else:
-            GPIO.output (rearLED, value)
+            GPIO.output(rearLED, value)
         
 # LsetAllLEDs(value): Sets both LEDs to OFF == 0 or ON == 1
 
@@ -575,14 +590,14 @@ def LsetLED (LED, value):
 #
 # irLeft(): Returns state of Left IR Obstacle sensor
 def irLeft():
-    if GPIO.input(irFL)==0:
+    if GPIO.input(irFL) == 0:
         return True
     else:
         return False
     
 # irRight(): Returns state of Right IR Obstacle sensor
 def irRight():
-    if GPIO.input(irFR)==0:
+    if GPIO.input(irFR) == 0:
         return True
     else:
         return False
@@ -592,28 +607,28 @@ def irRight():
 def irCentre():
     if PGType != PGFull:
         return False
-    if GPIO.input(irMID)==0:
+    if GPIO.input(irMID) == 0:
         return True
     else:
         return False
     
 # irAll(): Returns true if any of the Obstacle sensors are triggered
 def irAll():
-    if GPIO.input(irFL)==0 or GPIO.input(irFR)==0 or (PGType==PGFull and GPIO.input(irMID)==0):
+    if GPIO.input(irFL) == 0 or GPIO.input(irFR) == 0 or (PGType == PGFull and GPIO.input(irMID) == 0):
         return True
     else:
         return False
     
 # irLeftLine(): Returns state of Left IR Line sensor
 def irLeftLine():
-    if GPIO.input(lineLeft)==0:
+    if GPIO.input(lineLeft) == 0:
         return True
     else:
         return False
     
 # irRightLine(): Returns state of Right IR Line sensor
 def irRightLine():
-    if GPIO.input(lineRight)==0:
+    if GPIO.input(lineRight) == 0:
         return True
     else:
         return False
@@ -625,7 +640,8 @@ def irRightLine():
 #======================================================================
 # UltraSonic Functions
 #
-# getDistance(). Returns the distance in cm to the nearest reflecting object. 0 == no object
+# getDistance().  Returns the distance in cm to the nearest reflecting object.
+# 0 == no object
 # (Both versions)
 #
 def getDistance():
@@ -635,22 +651,22 @@ def getDistance():
     time.sleep(0.00001)
     GPIO.output(sonar, False)
     start = time.time()
-    count=time.time()
+    count = time.time()
     GPIO.setup(sonar,GPIO.IN)
-    while GPIO.input(sonar)==0 and time.time()-count<0.1:
+    while GPIO.input(sonar) == 0 and time.time() - count < 0.1:
         start = time.time()
-    count=time.time()
-    stop=count
-    while GPIO.input(sonar)==1 and time.time()-count<0.1:
+    count = time.time()
+    stop = count
+    while GPIO.input(sonar) == 1 and time.time() - count < 0.1:
         stop = time.time()
     # Calculate pulse length
-    elapsed = stop-start
+    elapsed = stop - start
     # Distance pulse travelled in that time is time
     # multiplied by the speed of sound 34000(cm/s) divided by 2
     distance = elapsed * 17000
     return distance
 
-# End of UltraSonic Functions    
+# End of UltraSonic Functions
 #======================================================================
 
 
@@ -658,39 +674,40 @@ def getDistance():
 # Light Sensor Functions
 # (Full Pi2Go Only)
 #
-# getLight(sensor). Returns the value 0..1023 for the selected sensor, 0 <= Sensor <= 3
-def getLight(sensor):
+# getLight(sensor).  Returns the value 0..1023 for the selected sensor, 0 <=
+# Sensor <= 3
+def getLight( sensor ):
     if PGType != PGFull:
         return False
-    value  = pcfADC.readADC(sensor)
+    value = pcfADC.readADC(sensor)
     return value
 
-# getLightFL(). Returns the value 0..1023 for Front-Left light sensor
+# getLightFL().  Returns the value 0..1023 for Front-Left light sensor
 def getLightFL():
     if PGType != PGFull:
         return False
-    value  = pcfADC.readADC(0)
+    value = pcfADC.readADC(0)
     return value
 
-# getLightFR(). Returns the value 0..1023 for Front-Right light sensor
-def getLightFR(sensor):
+# getLightFR().  Returns the value 0..1023 for Front-Right light sensor
+def getLightFR( sensor ):
     if PGType != PGFull:
         return False
-    value  = pcfADC.readADC(1)
+    value = pcfADC.readADC(1)
     return value
 
-# getLightBL(). Returns the value 0..1023 for Back-Left light sensor
-def getLightBL(sensor):
+# getLightBL().  Returns the value 0..1023 for Back-Left light sensor
+def getLightBL( sensor ):
     if PGType != PGFull:
         return False
-    value  = pcfADC.readADC(2)
+    value = pcfADC.readADC(2)
     return value
 
-# getLightBR(). Returns the value 0..1023 for Back-Right light sensor
-def getLightBR(sensor):
+# getLightBR().  Returns the value 0..1023 for Back-Right light sensor
+def getLightBR( sensor ):
     if PGType != PGFull:
         return False
-    value  = pcfADC.readADC(3)
+    value = pcfADC.readADC(3)
     return value
 
 # End of Light Sensor Functions
@@ -699,8 +716,8 @@ def getLightBR(sensor):
 
 #======================================================================
 # Switch Functions
-# 
-# getSwitch(). Returns the value of the tact switch: True==pressed
+#
+# getSwitch().  Returns the value of the tact switch: True==pressed
 def getSwitch():
     if PGType == 1:
         val = GPIO.input(switch)
@@ -717,13 +734,11 @@ def getSwitch():
 # Servo Functions
 # Pi2Go-Lite uses ServoD to control servos
 # Pi2Go Full uses the PCA9685 hardware controller
-
-def setServo(Servo, Degrees):
+def setServo( Servo, Degrees ):
     #print "ServosActive:", ServosActive
     if ServosActive == False:
         startServos()
-    pinServod (Servo, Degrees) # for now, simply pass on the input values
-
+    pinServod(Servo, Degrees) # for now, simply pass on the input values
 def stopServos():
     stopServod()
     
@@ -732,17 +747,18 @@ def startServos():
     
 def startServod():
     global ServosActive
-    #print "Starting servod. ServosActove:", ServosActive
+    #print "Starting servod.  ServosActove:", ServosActive
     SCRIPTPATH = os.path.split(os.path.realpath(__file__))[0]
     #os.system("sudo pkill -f servod")
-    os.system(SCRIPTPATH +'/servod --idle-timeout=20000 --p1pins="18,22" > /dev/null') 
+    os.system(SCRIPTPATH + '/servod --idle-timeout=20000 --p1pins="18,22" > /dev/null') 
     #print (SCRIPTPATH +'/servod --idle-timeout=20000 --p1pins="18,22"')
     ServosActive = True
 
-def pinServod(pin, degrees):
+def pinServod( pin, degrees ):
     #print pin, degrees
-    #print ("echo " + str(pin) + "=" + str(50+ ((90 - degrees) * 200 / 180)) + " > /dev/servoblaster")
-    os.system("echo " + str(pin) + "=" + str(50+ ((90 - degrees) * 200 / 180)) + " > /dev/servoblaster")
+    #print ("echo " + str(pin) + "=" + str(50+ ((90 - degrees) * 200 / 180)) +
+    #" > /dev/servoblaster")
+    os.system("echo " + str(pin) + "=" + str(50 + ((90 - degrees) * 200 / 180)) + " > /dev/servoblaster")
     
 def stopServod():
     global ServosActive

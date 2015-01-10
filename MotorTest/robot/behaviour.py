@@ -1,0 +1,2 @@
+class StepMovement(Movement):
+    pass

@@ -3,23 +3,40 @@ from webapp import app, socketio
 from flask import jsonify
 from flask_socketio import emit
 from json import loads
-
+import time
+import thread
+import atexit
 
 p = app.config["ROBOT"]
 current_action = None
 connected_users = 0
+_distance_thread_running = False
 
 motor_functions = {
-    "dopredu" : p.forward, "dozadu": p.reverse, "rotujvlevo" : p.spinLeft, "rotujvpravo" : p.spinRight,
-    "zatocvpredvpravo" : p.turnForwardRight, "zatocvpredvlevo": p.turnForwardLeft, "zatocvzadvlevo" : p.turnReverseLeft,
-    "zatocvzadvpravo" : p.turnReverseRight, "stop": p.stop}
+    "dopredu" : p.forward, "dozadu": p.reverse, "rotujvlevo" : p.spinLeft,
+    "rotujvpravo" : p.spinRight, "zatocvpredvpravo" : p.turn_forward_right,
+    "zatocvpredvlevo": p.turn_forward_left, "zatocvzadvlevo" : p.turn_reverse_left,
+    "zatocvzadvpravo" : p.turn_reverse_right, "stop": p.stop}
 
 #Helper functions
-def provedAkci(action):
+def provedAkci( action ):
     if p.isRobotInitiated:
         action(p.currentSpeed)
         global current_action
         current_action = action
+
+def measure_distance():
+    print('Distance Thread started')
+    while _distance_thread_running:
+        d = p.getDistance()
+        print("vzdalenost: " + str(d))
+        socketio.emit('sensors', {'sensor':'distance', 'value':d}, namespace='/malina')
+        time.sleep(2)
+    print('Distance thread exiting')
+
+@atexit.register
+def teardown_print():
+    p.cleanup()
 
  #Websockets
 @socketio.on('connect', namespace='/malina')
@@ -27,7 +44,9 @@ def client_connect():
     global connected_users
     connected_users += 1
     if connected_users == 1:
-        print("Start background monitoring threads")
+        global _distance_thread_running
+        _distance_thread_running = True
+        thread.start_new_thread(measure_distance, ())
     print('New client connected: ' + str(connected_users))
 
 @socketio.on('disconnect', namespace='/malina')
@@ -35,13 +54,14 @@ def client_disconnect():
     global connected_users
     connected_users -= 1
     if connected_users == 0:
-        print("Stop all background threads")
+        global _distance_thread_running
+        _distance_thread_running = False
     if connected_users < 0:
         connected_users = 0
     print('Client disconnected: ' + str(connected_users))
 
 @socketio.on('rychlost', namespace='/malina')
-def io_rychlost(json):
+def io_rychlost( json ):
     if json['akce'] == 'zrychli':
         p.currentSpeed = p.currentSpeed + 10
     if json['akce'] == 'zpomal':
@@ -55,7 +75,7 @@ def io_rychlost(json):
     emit('rychlost' , {'rychlost' : p.currentSpeed}, broadcast=True)
 
 @socketio.on('motor', namespace='/malina')
-def io_motor(json):
+def io_motor( json ):
     action = json['akce']
     if action in motor_functions:
         provedAkci(motor_functions[action])
@@ -63,5 +83,5 @@ def io_motor(json):
         print("Akce neni definovana: " + action)
 
 @socketio.on_error('/malina')
-def default_error_handler(e):
+def default_error_handler( e ):
     print('An error has occurred: ' + str(e))

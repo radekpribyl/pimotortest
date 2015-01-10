@@ -9,6 +9,11 @@ $(document).ready(function () {
         $("#srychlost").html(data.rychlost);
     })
 
+    socket.on('sensors', function (data) {
+        console.log(data);
+        $("#" + data.sensor).html(data.value);
+    })
+
     $("#bdopredu").click(function () {
         socket.emit('motor', { akce: 'dopredu' });
     })

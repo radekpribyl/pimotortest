@@ -2,6 +2,9 @@ from webapp import app, import_views, socketio
 from webapp.config import MalinaConfig
 from os import environ
 
+#Enable remote debugging
+import ptvsd
+ptvsd.enable_attach(secret = 'malina')
 
 if __name__ == '__main__':
     app.config.from_object(MalinaConfig)

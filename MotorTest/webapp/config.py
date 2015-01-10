@@ -20,8 +20,8 @@ class MalinaConfig(Config):
     ROBOT = robotimport()
 
 class TestingConfig(Config):
-    #DEBUG = True
-    #TESTING = True
+    DEBUG = True
+    TESTING = True
     ROBOT = __import__('pi2gomock')
     #ROBOT = robotimport()
 

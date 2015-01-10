@@ -1,3 +1,4 @@
+from __future__ import print_function
 from webapp import app, import_views, socketio
 from webapp.config import TestingConfig
 from os import environ
@@ -14,4 +15,5 @@ if __name__ == '__main__':
     
     #PORT = 5555
     ##app.run(host='0.0.0.0', port=PORT)
+
     socketio.run(app, host='0.0.0.0')

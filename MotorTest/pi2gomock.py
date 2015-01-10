@@ -1,4 +1,5 @@
 from __future__ import print_function
+from random import randint
 #My variables
 isRobotInitiated = False
 currentSpeed = 30
@@ -30,14 +31,17 @@ def turnForward(leftSpeed, rightSpeed):
 def turnreverse(leftSpeed, rightSpeed):
     print("Zatoc dozadu, leva rychlost: " + str(leftSpeed) + " prava: " + str(rightSpeed))
 
-def turnForwardLeft(speed):
+def turn_forward_left(speed):
     print("Zatoc dopredu doleva: " + str(speed))
 
-def turnForwardRight(speed):
+def turn_forward_right(speed):
     print("Zatoc dopredu dopredu: " + str(speed))
 
-def turnReverseLeft(speed):
+def turn_reverse_left(speed):
     print("Zatoc dozadu doleva: " + str(speed))
 
-def turnReverseRight(speed):
+def turn_reverse_right(speed):
     print("Zatoc dozadu doprava: " + str(speed))
+
+def getDistance():
+    return randint(0, 100)

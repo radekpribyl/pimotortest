@@ -26,9 +26,20 @@
   <ItemGroup>
     <Compile Include="Adafruit_I2C.py" />
     <Compile Include="Adafruit_PWM_Servo_Driver.py" />
-    <Compile Include="MotorTest.py" />
     <Compile Include="pi2go.py" />
     <Compile Include="regPythonVersion.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="robot\behaviour.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="robot\controls.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="robot\dummyGPIO.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="robot\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="runflaskoncomputer.py">
@@ -82,6 +93,7 @@
     <Content Include="webapp\templates\Index.html" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="robot\" />
     <Folder Include="webapp\" />
     <Folder Include="webapp\static\fonts\" />
     <Folder Include="webapp\static\css\" />
