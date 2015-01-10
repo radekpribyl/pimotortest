@@ -68,9 +68,12 @@ class Motor(object):
             del self._pwm_lff
             del self._pwm_lfr
             del self._pwm_rgf
-            del self._pwm_lfr
-            del _last_action
+            del self._pwm_rgr
             self._initialized = False
+
+    @property
+    def current_speed(self):
+        return self._curr_speed
 
     def _exec_last_action( self ):
         if self._initialized:
@@ -208,17 +211,26 @@ class Sensor(object):
             else:
                 return False
 
+    def _generate_callback( self, callback):
+        def _call_callback(pin):
+            state = self.activated
+            callback(self._pin, state)
+        return _call_callback
+
     def register_off_callback( self, callback ):
         if self._initialized:
-            GPIO.add_event_detect(self._pin, GPIO.RISING, callback=callback, bouncetime=200)
+            fce_to_call = self._generate_callback(callback)
+            GPIO.add_event_detect(self._pin, GPIO.RISING, callback=fce_to_call, bouncetime=100)
 
     def register_on_callback( self, callback ):
         if self._initialized:
-            GPIO.add_event_detect(self._pin, GPIO.FALLING, callback=callback, bouncetime=200)
+            fce_to_call = self._generate_callback(callback)
+            GPIO.add_event_detect(self._pin, GPIO.FALLING, callback=fce_to_call, bouncetime=100)
 
     def register_both_callbacks( self, callback ):
         if self._initialized:
-            GPIO.add_event_detect(self._pin, GPIO.BOTH, callback=callback, bouncetime=200)
+            fce_to_call = self._generate_callback(callback)
+            GPIO.add_event_detect(self._pin, GPIO.BOTH, callback=fce_to_call, bouncetime=100)
 
     def remove_callbacks( self ):
         if self._initialized:
@@ -274,30 +286,30 @@ class WhiteLED(object):
 class DistanceSensor(object):
     def __init__( self, pin ):
         self._pin = pin
-        self._measure_running = threading.Event()
+        self.measure_running = threading.Event()
 
     def init( self ):
         pass
 
     def _distance_measure(self, callback, delay=1):
         if delay < 0.2: delay = 0.2
-        while self._measure_distance.is_set():
+        while self.measure_running.is_set():
             distance = self.get_distance()
             callback(distance)
             time.sleep(delay)
 
     def start_distance_measure(self, callback, delay=1):
-        if not self._measure_running.is_set():
+        if not self.measure_running.is_set():
             if callable(callback):
-                self._measure_thred = Thread(target=self._distance_measure, args=(callback, delay))
-                self._measure_running.set()
-                self._measure_thred.start()
+                self._measure_thread = threading.Thread(target=self._distance_measure, args=(callback, delay))
+                self.measure_running.set()
+                self._measure_thread.start()
             else:
                 raise AttributeError()
 
     def stop_distance_measure(self):
-        if self._measure_running.is_set():
-            self._measure_running.clear()
+        if self.measure_running.is_set():
+            self.measure_running.clear()
 
     def get_distance( self ):
         GPIO.setup(self._pin, GPIO.OUT)
@@ -307,7 +319,9 @@ class DistanceSensor(object):
         GPIO.output(self._pin, False)
 
         GPIO.setup(self._pin, GPIO.IN)
+        pulse_start = time.time()
         count = time.time()
+        pulse_end = count
         while GPIO.input(self._pin) == 0 and time.time() - count < 0.1:
             pulse_start = time.time()
 
@@ -320,9 +334,8 @@ class DistanceSensor(object):
         return round(distance, 4)
 
     def cleanup( self ):
-        if self._measure_running.is_set:
+        if self.measure_running.is_set:
             self.stop_distance_measure()
-            while self._measure_thred.is_alive():pass
 
 class Servo(object):
     pass
@@ -330,6 +343,7 @@ class Servo(object):
 class Pi2GoRobot(object):
     def __init__( self ):
         self._components = []
+        self.is_robot_initiated = False
         #Both motor setup
         self.motor = Motor(26,24,19,21, 7.3)
         self._components.append(self.motor)
@@ -361,13 +375,15 @@ class Pi2GoRobot(object):
 
         #Distance sensor
         self.distance_sensor = DistanceSensor(8)
-        self._components.append(distance_sensor)
+        self._components.append(self.distance_sensor)
 
-    def robot_init( self ):
+    def init( self ):
         for component in self._components:
             component.init()
+        self.is_robot_initiated = True
 
-    def robot_cleanup( self ):
+    def cleanup( self ):
         for component in self._components:
             component.cleanup()
         GPIO.cleanup()
+        self.is_robot_initiated = False

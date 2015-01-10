@@ -1,4 +1,5 @@
 import os
+from robot.controls import Pi2GoRobot
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 #Helper functions
@@ -15,14 +16,16 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET_KEY = 'fdsafsfdsafdsafh;ljh'
+    ROBOT = Pi2GoRobot()
 
 class MalinaConfig(Config):
-    ROBOT = robotimport()
+    pass
+    #ROBOT = robotimport()
 
 class TestingConfig(Config):
     DEBUG = True
     TESTING = True
-    ROBOT = __import__('pi2gomock')
+    #ROBOT = __import__('pi2gomock')
     #ROBOT = robotimport()
 
 

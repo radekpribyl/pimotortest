@@ -3,50 +3,38 @@ from webapp import app, socketio
 from flask import jsonify
 from flask_socketio import emit
 from json import loads
-import time
-import thread
 import atexit
 
-p = app.config["ROBOT"]
-current_action = None
+robot = app.config["ROBOT"]
+motor = robot.motor
+dist_sensor = robot.distance_sensor
+obs_lf = robot.obstacle_left
+obs_rg = robot.obstacle_right
 connected_users = 0
-_distance_thread_running = False
 
 motor_functions = {
-    "dopredu" : p.forward, "dozadu": p.reverse, "rotujvlevo" : p.spinLeft,
-    "rotujvpravo" : p.spinRight, "zatocvpredvpravo" : p.turn_forward_right,
-    "zatocvpredvlevo": p.turn_forward_left, "zatocvzadvlevo" : p.turn_reverse_left,
-    "zatocvzadvpravo" : p.turn_reverse_right, "stop": p.stop}
+    "dopredu" : motor.forward, "dozadu": motor.reverse, "rotujvlevo" : motor.spin_left,
+    "rotujvpravo" : motor.spin_right, "zatocvpredvpravo" : motor.turn_forward_right,
+    "zatocvpredvlevo": motor.turn_forward_left, "zatocvzadvlevo" : motor.turn_reverse_left,
+    "zatocvzadvpravo" : motor.turn_reverse_right, "stop": motor.stop}
 
 #Helper functions
-def provedAkci( action ):
-    if p.isRobotInitiated:
-        action(p.currentSpeed)
-        global current_action
-        current_action = action
-
-def measure_distance():
-    print('Distance Thread started')
-    while _distance_thread_running:
-        d = p.getDistance()
-        print("vzdalenost: " + str(d))
-        socketio.emit('sensors', {'sensor':'distance', 'value':d}, namespace='/malina')
-        time.sleep(2)
-    print('Distance thread exiting')
-
 @atexit.register
 def teardown_print():
-    p.cleanup()
+    robot.cleanup()
 
  #Websockets
 @socketio.on('connect', namespace='/malina')
 def client_connect():
     global connected_users
     connected_users += 1
-    if connected_users == 1:
-        global _distance_thread_running
-        _distance_thread_running = True
-        thread.start_new_thread(measure_distance, ())
+    if connected_users > 0 and robot.is_robot_initiated and not dist_sensor.measure_running.is_set():
+        dist_sensor.start_distance_measure(lambda(dist): socketio.emit('sensors',
+                                           {'sensor':'distance', 'value':dist}, namespace='/malina'))
+        obs_lf.register_both_callbacks(lambda(pin, state): socketio.emit('sensors',
+                                           {'sensor':'obs_lf', 'value':state}, namespace='/malina'))
+        obs_rg.register_both_callbacks(lambda(pin, state): socketio.emit('sensors',
+                                           {'sensor':'obs_rg', 'value':state}, namespace='/malina'))
     print('New client connected: ' + str(connected_users))
 
 @socketio.on('disconnect', namespace='/malina')
@@ -54,8 +42,9 @@ def client_disconnect():
     global connected_users
     connected_users -= 1
     if connected_users == 0:
-        global _distance_thread_running
-        _distance_thread_running = False
+        dist_sensor.stop_distance_measure()
+        obs_lf.remove_callbacks()
+        obs_rg.remove_callbacks()
     if connected_users < 0:
         connected_users = 0
     print('Client disconnected: ' + str(connected_users))
@@ -63,22 +52,17 @@ def client_disconnect():
 @socketio.on('rychlost', namespace='/malina')
 def io_rychlost( json ):
     if json['akce'] == 'zrychli':
-        p.currentSpeed = p.currentSpeed + 10
+        speed = motor.increase_speed()
     if json['akce'] == 'zpomal':
-        p.currentSpeed = p.currentSpeed - 10
-    if p.currentSpeed > 100 :
-        p.currentSpeed = 100
-    if p.currentSpeed < 1 :
-        p.currentSpeed = 0
-    if current_action is not None:
-            current_action(p.currentSpeed)
-    emit('rychlost' , {'rychlost' : p.currentSpeed}, broadcast=True)
+        speed = motor.decrease_speed()
+    
+    emit('rychlost' , {'rychlost' : speed}, broadcast=True)
 
 @socketio.on('motor', namespace='/malina')
 def io_motor( json ):
     action = json['akce']
     if action in motor_functions:
-        provedAkci(motor_functions[action])
+        motor_functions[action]()
     else:
         print("Akce neni definovana: " + action)
 
