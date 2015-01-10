@@ -4,10 +4,16 @@
 
 #Import all modules/libraries
 import time
+import threading
+
 try:
     import RPi.GPIO as GPIO
 except ImportError:
     import dummyGPIO as GPIO
+
+#Set the mode here so that the classes can be possibly used without the
+#Pi2GoRobot class
+GPIO.setmode(GPIO.BOARD)
 
 #Helper functions
 def _check_pwm_value( intensity ):
@@ -175,6 +181,7 @@ class Motor(object):
             if self._curr_speed > 99:
                 self._curr_speed = 100
             self._exec_last_action()
+            return self._curr_speed
 
     def decrease_speed( self, decrement = 10 ):
         if self._initialized:
@@ -182,34 +189,50 @@ class Motor(object):
             if self._curr_speed < 1:
                 self._curr_speed = 0
             self._exec_last_action()
+            return self._curr_speed
 
-class IrSensor(object):
+class Sensor(object):
     def __init__( self, pin ):
         self._pin = pin
         self._initialized = False
 
     def init( self ):
         GPIO.setup(self._pin, GPIO.IN)
+        self._initialized = True
 
-    def triggered( self ):
-        if GPIO.input(self._pin) == 0:
-            return True
-        else:
-            return False
+    @property
+    def activated( self ):
+        if self._initialized:
+            if GPIO.input(self._pin) == 0:
+                return True
+            else:
+                return False
 
-    def register_raising_callback( self, callback ):
-        GPIO.add_event_detect(self._pin, GPIO.RISING, callback=callback, bouncetime=200)
+    def register_off_callback( self, callback ):
+        if self._initialized:
+            GPIO.add_event_detect(self._pin, GPIO.RISING, callback=callback, bouncetime=200)
 
-    def register_failing_callback( self, callback ):
-        GPIO.add_event_detect(self._pin, GPIO.FALLING, callback=callback, bouncetime=200)
+    def register_on_callback( self, callback ):
+        if self._initialized:
+            GPIO.add_event_detect(self._pin, GPIO.FALLING, callback=callback, bouncetime=200)
+
+    def register_both_callbacks( self, callback ):
+        if self._initialized:
+            GPIO.add_event_detect(self._pin, GPIO.BOTH, callback=callback, bouncetime=200)
 
     def remove_callbacks( self ):
-        GPIO.remove_event_detect(self._pin)
+        if self._initialized:
+            GPIO.remove_event_detect(self._pin)
 
     def cleanup( self ):
         if self._initialized:
             self.remove_callbacks()
             self._initialized = False
+
+class Switch(Sensor):
+    def init( self ):
+        GPIO.setup(self._pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self._initialized = True
 
 class WhiteLED(object):
     def __init__( self, pin ):
@@ -223,10 +246,10 @@ class WhiteLED(object):
         self._initialized = True
 
     def on( self ):
-        self.set(0)
+        self.set(100)
 
     def off( self ):
-        self.set(100)
+        self.set(0)
 
     def set( self, intensity ):
         if self._initialized:
@@ -249,10 +272,57 @@ class WhiteLED(object):
             self._initialized = False
 
 class DistanceSensor(object):
-    pass
+    def __init__( self, pin ):
+        self._pin = pin
+        self._measure_running = threading.Event()
 
-class Switch(object):
-    pass
+    def init( self ):
+        pass
+
+    def _distance_measure(self, callback, delay=1):
+        if delay < 0.2: delay = 0.2
+        while self._measure_distance.is_set():
+            distance = self.get_distance()
+            callback(distance)
+            time.sleep(delay)
+
+    def start_distance_measure(self, callback, delay=1):
+        if not self._measure_running.is_set():
+            if callable(callback):
+                self._measure_thred = Thread(target=self._distance_measure, args=(callback, delay))
+                self._measure_running.set()
+                self._measure_thred.start()
+            else:
+                raise AttributeError()
+
+    def stop_distance_measure(self):
+        if self._measure_running.is_set():
+            self._measure_running.clear()
+
+    def get_distance( self ):
+        GPIO.setup(self._pin, GPIO.OUT)
+        # Send 10us pulse to trigger
+        GPIO.output(self._pin, True)
+        time.sleep(0.00001)
+        GPIO.output(self._pin, False)
+
+        GPIO.setup(self._pin, GPIO.IN)
+        count = time.time()
+        while GPIO.input(self._pin) == 0 and time.time() - count < 0.1:
+            pulse_start = time.time()
+
+        count = time.time()
+        while GPIO.input(self._pin) == 1 and time.time() - count < 0.1:
+            pulse_end = time.time()
+
+        pulse_duration = pulse_end - pulse_start
+        distance = pulse_duration * 17150
+        return round(distance, 4)
+
+    def cleanup( self ):
+        if self._measure_running.is_set:
+            self.stop_distance_measure()
+            while self._measure_thred.is_alive():pass
 
 class Servo(object):
     pass
@@ -271,10 +341,10 @@ class Pi2GoRobot(object):
         self._components.append(self.rear_LED)
 
         #IR sensors
-        self.obstacle_left = IrSensor(7)
-        self.obstacle_right = IrSensor(11)
-        self.linesensor_left = IrSensor(12)
-        self.linesensor_right = IrSensor(13)
+        self.obstacle_left = Sensor(7)
+        self.obstacle_right = Sensor(11)
+        self.linesensor_left = Sensor(12)
+        self.linesensor_right = Sensor(13)
         self._components.append(self.obstacle_left)
         self._components.append(self.obstacle_right)
         self._components.append(self.linesensor_left)
@@ -285,8 +355,15 @@ class Pi2GoRobot(object):
         self.wheelsensor_left = self.linesensor_left
         self.wheelsensor_right = self.linesensor_right
 
+        #Switch
+        self.switch = Switch(23)
+        self._components.append(self.switch)
+
+        #Distance sensor
+        self.distance_sensor = DistanceSensor(8)
+        self._components.append(distance_sensor)
+
     def robot_init( self ):
-        GPIO.setmode(GPIO.BOARD)
         for component in self._components:
             component.init()
 

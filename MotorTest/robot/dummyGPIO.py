@@ -2,6 +2,7 @@ OUT = 0
 IN = 1
 BOARD = 0
 RISING = 0
+BOTH = 0
 
 def setup(pin, type):
     pass
