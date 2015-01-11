@@ -37,9 +37,10 @@ class Motor(object):
             self._initialized = True
 
     def cleanup( self ):
-        GPIO.cleanup(self._pin_fwd)
-        GPIO.cleanup(self._pin_rev)
-        self._initialized = False
+        if self._initialized:
+            GPIO.cleanup(self._pin_fwd)
+            GPIO.cleanup(self._pin_rev)
+            self._initialized = False
 
     def forward( self, speed ):
         if self._initialized:
@@ -209,7 +210,7 @@ class DistanceSensor(object):
 
         pulse_duration = pulse_end - pulse_start
         distance = pulse_duration * 17150
-        return round(distance, 4)
+        return round(distance, 2)
 
 
 class Servo(object):
