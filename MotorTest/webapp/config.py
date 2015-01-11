@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 def robotimport():
     robot = None
     try:
-        robot  = __import__('pi2go')
+        robot = __import__('pi2go')
     except:
         robot = __import__('pi2gomock')
     return robot
@@ -19,9 +19,9 @@ class Config(object):
     ROBOT = Robot()
 
 class MalinaConfig(Config):
-    pass
+    DEBUG = True
+    TESTING = True
     #ROBOT = robotimport()
-
 class TestingConfig(Config):
     DEBUG = True
     TESTING = True

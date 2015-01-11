@@ -18,12 +18,6 @@ steering_functions = {
     "zatocvpredvlevo": steering.turn_forward_left, "zatocvzadvlevo" : steering.turn_reverse_left,
     "zatocvzadvpravo" : steering.turn_reverse_right, "stop": steering.stop}
 
-#Helper functions
-@atexit.register
-def robot_cleanup_on_exit():
-    print("Robot cleanup")
-    robot.cleanup()
-
  #Websockets
 @socketio.on('connect', namespace='/malina')
 def client_connect():

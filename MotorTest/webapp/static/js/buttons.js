@@ -5,12 +5,10 @@ $(document).ready(function () {
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/malina');
 
     socket.on('rychlost', function (data) {
-        console.log(data);
         $("#srychlost").html(data.rychlost);
     })
 
     socket.on('sensors', function (data) {
-        console.log(data);
         $("#" + data.sensor).html(data.value);
     })
 
