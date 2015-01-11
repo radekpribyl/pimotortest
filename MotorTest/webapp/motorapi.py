@@ -20,7 +20,8 @@ steering_functions = {
 
 #Helper functions
 @atexit.register
-def teardown_print():
+def robot_cleanup_on_exit():
+    print("Robot cleanup")
     robot.cleanup()
 
  #Websockets
@@ -29,11 +30,11 @@ def client_connect():
     global connected_users
     connected_users += 1
     if connected_users > 0 and robot.is_robot_initiated and not dist_sensor.measure_running.is_set():
-        dist_sensor.start_distance_measure(lambda(dist): socketio.emit('sensors',
+        dist_sensor.start_distance_measure(lambda dist: socketio.emit('sensors',
                                            {'sensor':'distance', 'value':dist}, namespace='/malina'))
-        obs_lf.register_both_callbacks(lambda(pin, state): socketio.emit('sensors',
+        obs_lf.register_both_callbacks(lambda pin, state: socketio.emit('sensors',
                                            {'sensor':'obs_lf', 'value':state}, namespace='/malina'))
-        obs_rg.register_both_callbacks(lambda(pin, state): socketio.emit('sensors',
+        obs_rg.register_both_callbacks(lambda pin, state: socketio.emit('sensors',
                                            {'sensor':'obs_rg', 'value':state}, namespace='/malina'))
     print('New client connected: ' + str(connected_users))
 
