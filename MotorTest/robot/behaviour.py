@@ -1,2 +1,0 @@
-class StepMovement(Movement):
-    pass

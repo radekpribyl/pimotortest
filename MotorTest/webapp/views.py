@@ -9,7 +9,7 @@ robot = app.config["ROBOT"]
 #, request, jsonify, abort, make_response, url_for, redirect
 @app.route('/')
 def home():
-    config = {"zapnuty" : robot.is_robot_initiated, "rychlost" : robot.motor.current_speed}
+    config = {"zapnuty" : robot.is_robot_initiated, "rychlost" : robot.steering.current_speed}
     return render_template('Index.html', config = config)
 
 @app.route('/prepni')

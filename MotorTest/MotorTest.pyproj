@@ -27,19 +27,22 @@
     <Compile Include="Adafruit_I2C.py" />
     <Compile Include="Adafruit_PWM_Servo_Driver.py" />
     <Compile Include="pi2go.py" />
+    <Compile Include="pi2golite\_helpers.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="regPythonVersion.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="robot\behaviour.py">
+    <Compile Include="pi2golite\behaviours.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="robot\controls.py">
+    <Compile Include="pi2golite\components.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="robot\dummyGPIO.py">
+    <Compile Include="pi2golite\dummyGPIO.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="robot\__init__.py">
+    <Compile Include="pi2golite\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="runflaskoncomputer.py">
@@ -93,7 +96,7 @@
     <Content Include="webapp\templates\Index.html" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="robot\" />
+    <Folder Include="pi2golite\" />
     <Folder Include="webapp\" />
     <Folder Include="webapp\static\fonts\" />
     <Folder Include="webapp\static\css\" />

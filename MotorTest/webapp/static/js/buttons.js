@@ -15,38 +15,38 @@ $(document).ready(function () {
     })
 
     $("#bdopredu").click(function () {
-        socket.emit('motor', { akce: 'dopredu' });
+        socket.emit('steering', { akce: 'dopredu' });
     })
     $("#bstop").click(function () {
-        socket.emit('motor', { akce: 'stop' });
+        socket.emit('steering', { akce: 'stop' });
     })
 
     $("#bdozadu").click(function () {
-        socket.emit('motor', { akce: 'dozadu' });
+        socket.emit('steering', { akce: 'dozadu' });
     })
 
     $("#brotujedoleva").click(function () {
-        socket.emit('motor', { akce: 'rotujvlevo' });
+        socket.emit('steering', { akce: 'rotujvlevo' });
     })
 
     $("#brotujdoprava").click(function () {
-        socket.emit('motor', { akce: 'rotujvpravo' });
+        socket.emit('steering', { akce: 'rotujvpravo' });
     })
 
     $("#bvpredvlevo").click(function () {
-        socket.emit('motor', { akce: 'zatocvpredvlevo' });
+        socket.emit('steering', { akce: 'zatocvpredvlevo' });
     })
 
     $("#bvredvpravo").click(function () {
-        socket.emit('motor', { akce: 'zatocvpredvpravo' });
+        socket.emit('steering', { akce: 'zatocvpredvpravo' });
     })
 
     $("#bvzadvlevo").click(function () {
-        socket.emit('motor', { akce: 'zatocvzadvlevo' });
+        socket.emit('steering', { akce: 'zatocvzadvlevo' });
     })
 
     $("#bvzadvpravo").click(function () {
-        socket.emit('motor', { akce: 'zatocvzadvpravo' });
+        socket.emit('steering', { akce: 'zatocvzadvpravo' });
     })
 
     $("#bzrychli").click(function () {

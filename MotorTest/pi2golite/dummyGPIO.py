@@ -20,7 +20,7 @@ def input(pin):
 def output(pin, value):
     pass
 
-def cleanup():
+def cleanup(pin=0):
     pass
 
 def add_event_detect(pin, type, callback=None, bouncetime=100):
@@ -39,6 +39,6 @@ class PWM:
         print("Changing frequency on pin: %s to: %s" % (self.pin, self.freq))
     def ChangeDutyCycle(self, dc):
         self.dc = dc
-        print("Changing dc on pin: %s to: %s" % (self.pin, self.freq))
+        print("Changing dc on pin: %s to: %s" % (self.pin, self.dc))
     def start(self, dc):
         self.dc = dc

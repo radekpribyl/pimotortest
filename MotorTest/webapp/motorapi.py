@@ -6,17 +6,17 @@ from json import loads
 import atexit
 
 robot = app.config["ROBOT"]
-motor = robot.motor
+steering = robot.steering
 dist_sensor = robot.distance_sensor
 obs_lf = robot.obstacle_left
 obs_rg = robot.obstacle_right
 connected_users = 0
 
-motor_functions = {
-    "dopredu" : motor.forward, "dozadu": motor.reverse, "rotujvlevo" : motor.spin_left,
-    "rotujvpravo" : motor.spin_right, "zatocvpredvpravo" : motor.turn_forward_right,
-    "zatocvpredvlevo": motor.turn_forward_left, "zatocvzadvlevo" : motor.turn_reverse_left,
-    "zatocvzadvpravo" : motor.turn_reverse_right, "stop": motor.stop}
+steering_functions = {
+    "dopredu" : steering.forward, "dozadu": steering.reverse, "rotujvlevo" : steering.spin_left,
+    "rotujvpravo" : steering.spin_right, "zatocvpredvpravo" : steering.turn_forward_right,
+    "zatocvpredvlevo": steering.turn_forward_left, "zatocvzadvlevo" : steering.turn_reverse_left,
+    "zatocvzadvpravo" : steering.turn_reverse_right, "stop": steering.stop}
 
 #Helper functions
 @atexit.register
@@ -52,17 +52,17 @@ def client_disconnect():
 @socketio.on('rychlost', namespace='/malina')
 def io_rychlost( json ):
     if json['akce'] == 'zrychli':
-        speed = motor.increase_speed()
+        speed = steering.increase_speed()
     if json['akce'] == 'zpomal':
-        speed = motor.decrease_speed()
+        speed = steering.decrease_speed()
     
     emit('rychlost' , {'rychlost' : speed}, broadcast=True)
 
-@socketio.on('motor', namespace='/malina')
-def io_motor( json ):
+@socketio.on('steering', namespace='/malina')
+def io_steering( json ):
     action = json['akce']
-    if action in motor_functions:
-        motor_functions[action]()
+    if action in steering_functions:
+        steering_functions[action]()
     else:
         print("Akce neni definovana: " + action)
 

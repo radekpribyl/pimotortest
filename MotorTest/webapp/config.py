@@ -1,5 +1,5 @@
 import os
-from robot.controls import Pi2GoRobot
+from pi2golite import Robot
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 #Helper functions
@@ -16,7 +16,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET_KEY = 'fdsafsfdsafdsafh;ljh'
-    ROBOT = Pi2GoRobot()
+    ROBOT = Robot()
 
 class MalinaConfig(Config):
     pass
