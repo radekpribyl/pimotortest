@@ -257,7 +257,7 @@ class Servo(object):
             angle = validate_max(angle, self._max_angle)
             self._curr_angle = angle
             steps = self._min_steps + ((self._curr_angle / self._max_angle) * (self._max_steps - self._min_steps))
-            os.system("echo P1-" + str(self._pin) + " = " + str(steps) + " > /dev/servoblaster") 
+            os.system("echo P1-" + str(self._pin) + "=" + str(steps) + " > /dev/servoblaster") 
 
     def increase_angle(self, increment=10):
         self.set_angle(self._curr_angle + increment)
