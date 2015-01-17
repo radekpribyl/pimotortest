@@ -196,7 +196,6 @@ class DistanceSensor(object):
     def cleanup(self):
         if self.measure_running.is_set:
             self.stop_distance_measure()
-            GPIO.cleanup(self._pin)
 
     def _distance_measure(self, callback, delay=1):
         if delay < 0.2:
@@ -205,6 +204,7 @@ class DistanceSensor(object):
             distance = self.get_distance()
             callback(distance)
             time.sleep(delay)
+        GPIO.cleanup(self._pin)
 
     def start_distance_measure(self, callback, delay=1):
         if not self.measure_running.is_set():
@@ -256,7 +256,8 @@ class Servo(object):
         if self._initialized:
             angle = validate_max(angle, self._max_angle)
             self._curr_angle = angle
-            steps = self._min_steps + ((self._curr_angle / self._max_angle) * (self._max_steps - self._min_steps))
+            steps = int(self._min_steps + ((self._curr_angle / self._max_angle) * (self._max_steps - self._min_steps)))
+            print(steps)
             os.system("echo P1-" + str(self._pin) + "=" + str(steps) + " > /dev/servoblaster") 
 
     def increase_angle(self, increment=10):
