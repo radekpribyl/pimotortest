@@ -24,8 +24,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Adafruit_I2C.py" />
-    <Compile Include="Adafruit_PWM_Servo_Driver.py" />
     <Compile Include="pi2go.py" />
     <Compile Include="pi2golite\_helpers.py">
       <SubType>Code</SubType>
@@ -81,8 +79,6 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="servod" />
-    <Content Include="sgh_PCF8591P.pyc" />
     <Content Include="webapp\static\css\bootstrap.css.map" />
     <Content Include="webapp\static\css\malina.css" />
     <Content Include="webapp\static\fonts\glyphicons-halflings-regular.eot" />

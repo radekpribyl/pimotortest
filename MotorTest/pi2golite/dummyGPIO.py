@@ -5,6 +5,7 @@ OUT = 0
 IN = 1
 BOARD = 0
 RISING = 0
+FALLING = 1
 BOTH = 0
 PUD_UP = 0
 
@@ -15,13 +16,14 @@ def setmode(mode):
     pass
 
 def input(pin):
+    print('Getting input for PIN: %s' % (pin,))
     return bool(randrange(0, 2))
 
 def output(pin, value):
     pass
 
 def cleanup(pin=0):
-    pass
+    print('Cleaning Pin: %s' % (pin,))
 
 def add_event_detect(pin, type, callback=None, bouncetime=100):
     pass

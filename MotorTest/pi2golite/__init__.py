@@ -1,52 +1,67 @@
-from components import DistanceSensor, Motor, Sensor, Switch, WhiteLED
-from behaviours import Steering
+from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, WhiteLED, WheelSensor, ServosDriver
+from pi2golite.behaviours import Steering
 
 class Robot(object):
-    def __init__( self ):
-        self._components = []
+    """The Robot class assebles all the individual components together
+    and adds basic behaviours to the pi2golite robot"""
+
+    def __init__(self, wheel_sensors=True, servos=True):
         self.is_robot_initiated = False
+
+        #Defining robot's hardware components
+        self.components = {}
+        
         #Both motor setup
         left_motor = Motor(26, 24, 7.3)
         right_motor = Motor(19, 21)
-        self._components.append(left_motor)
-        self._components.append(right_motor)
-        self.steering = Steering(left_motor, right_motor)
+        self.components['left_motor'] = left_motor
+        self.components['right_motor'] = right_motor
 
         #While LEDs setup
-        self.front_LED = WhiteLED(15)
-        self.rear_LED = WhiteLED(16)
-        self._components.append(self.front_LED)
-        self._components.append(self.rear_LED)
+        self.components['front_Led'] = WhiteLED(15)
+        self.components['rear_Led'] = WhiteLED(16)
 
         #IR sensors
-        self.obstacle_left = Sensor(7)
-        self.obstacle_right = Sensor(11)
-        self.linesensor_left = Sensor(12)
-        self.linesensor_right = Sensor(13)
-        self._components.append(self.obstacle_left)
-        self._components.append(self.obstacle_right)
-        self._components.append(self.linesensor_left)
-        self._components.append(self.linesensor_right)
-
-        #Aliases for wheel sensors as they have to be switched
-        #Pins are the same as for line sensors
-        self.wheelsensor_left = self.linesensor_left
-        self.wheelsensor_right = self.linesensor_right
+        self.components['obstacle_left'] = Sensor(7)
+        self.components['obstacle_right'] = Sensor(11)
+        self.components['linesensor_left'] = Sensor(12)
+        self.components['linesensor_right'] = Sensor(13)
 
         #Switch
-        self.switch = Switch(23)
-        self._components.append(self.switch)
+        self.components['switch'] = Switch(23)
 
         #Distance sensor
-        self.distance_sensor = DistanceSensor(8)
-        self._components.append(self.distance_sensor)
+        self.components['distance_sensor'] = DistanceSensor(8)
 
-    def init( self ):
-        for component in self._components:
+        #Optional components
+        #Aliases for wheel sensors as they have to be switched
+        #Pins are the same as for line sensors
+        if wheel_sensors:
+            self.components['wheelsensor_left'] = WheelSensor(self.components['linesensor_left'])
+            self.components['wheelsensor_right'] = WheelSensor(self.components['linesensor_right'])
+
+        #Servos
+        if servos:
+            self.components['servos'] = ServosDriver()
+
+        #Adding behaviour
+        self.steering = Steering(left_motor, right_motor)
+
+    def __getattr__(self, attrname):
+        """"Delegate to steering instance to simplify access to key robot's methods"""
+        if attrname in (name for name in dir(self.steering) if not name.startswith('_')):
+            return getattr(self.steering, attrname)
+        else:
+            raise AttributeError(attrname)
+
+    def init(self):
+        """Initialize all components connected to pi2golite robot"""
+        for component in self.components.values():
             component.init()
         self.is_robot_initiated = True
 
-    def cleanup( self ):
-        for component in self._components:
+    def cleanup(self):
+        """Clean all components."""
+        for component in self.components.values():
             component.cleanup()
         self.is_robot_initiated = False

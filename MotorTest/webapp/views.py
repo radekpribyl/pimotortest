@@ -1,21 +1,19 @@
 from webapp import app
+from flask import render_template, url_for, redirect
 
-from flask import render_template, url_for, redirect, jsonify
+ROBOT = app.config["ROBOT"]
 
-#import pi2go as p
-#import pi2gomock as p
-robot = app.config["ROBOT"]
-
-#, request, jsonify, abort, make_response, url_for, redirect
 @app.route('/')
 def home():
-    config = {"zapnuty" : robot.is_robot_initiated, "rychlost" : robot.steering.current_speed}
-    return render_template('Index.html', config = config)
+    config = {"zapnuty" : ROBOT.is_robot_initiated,
+              "rychlost" : ROBOT.steering.current_speed}
+
+    return render_template('Index.html', config=config)
 
 @app.route('/prepni')
 def prepni():
-    if robot.is_robot_initiated:
-        robot.cleanup()
+    if ROBOT.is_robot_initiated:
+        ROBOT.cleanup()
     else:
-        robot.init()
+        ROBOT.init()
     return redirect(url_for('home'))
