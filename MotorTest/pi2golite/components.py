@@ -196,7 +196,7 @@ class DistanceSensor(object):
     def cleanup(self):
         if self.measure_running.is_set:
             self.stop_distance_measure()
-        GPIO.cleanup(self._pin)
+            GPIO.cleanup(self._pin)
 
     def _distance_measure(self, callback, delay=1):
         if delay < 0.2:
@@ -290,8 +290,7 @@ class ServosDriver(object):
         """Starts the servod and initializes both servos"""
         if not self._initialized:
             path = os.path.split(os.path.realpath(__file__))[0]
-            command = """/servod --idle-timeout=%s --min=%s --max=%s 
-            --p1pins="%s,%s" > /dev/null""" % (ServosDriver.idle_timeout, ServosDriver.min_steps,
+            command = '/servod --idle-timeout=%s --min=%s --max=%s --p1pins="%s,%s" > /dev/null' % (ServosDriver.idle_timeout, ServosDriver.min_steps,
                                                 ServosDriver.max_steps, self._panpin, self._tiltpin)
             print(command)
             os.system(path + command)
