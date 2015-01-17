@@ -291,8 +291,9 @@ class ServosDriver(object):
         if not self._initialized:
             path = os.path.split(os.path.realpath(__file__))[0]
             command = """/servod --idle-timeout=%s --min=%s --max=%s 
-            --p1pins="%s,%s" > /dev/null'""" % (ServosDriver.idle_timeout, ServosDriver.min_steps,
+            --p1pins="%s,%s" > /dev/null""" % (ServosDriver.idle_timeout, ServosDriver.min_steps,
                                                 ServosDriver.max_steps, self._panpin, self._tiltpin)
+            print(command)
             os.system(path + command)
             self.pan_servo.init()
             self.tilt_servo.init()
