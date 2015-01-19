@@ -101,3 +101,14 @@ class Steering(object):
     def decrease_speed(self, decrement=10):
         speed = self._curr_speed - decrement
         return self.set_speed(speed)
+
+class StepSteering(object):
+    def __init__(self, steering, whl_counter_lf, whl_counter_rg):
+        self._steering = steering
+        self._whl_counter_lf = whl_counter_lf
+        self._whl_counter_rg = whl_counter_rg
+
+    def forward(self, steps):
+        self._whl_counter_lf.start(steps)
+        self._whl_counter_rg.start(steps)
+        self._steering.forward()

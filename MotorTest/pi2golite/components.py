@@ -99,23 +99,32 @@ class Sensor(object):
             callback(self._pin, state)
         return _call_callback
 
-    def register_off_callback(self, callback):
+    def register_off_callback(self, callback, bouncetime=100):
         if self._initialized:
             fce_to_call = self._generate_callback(callback)
             GPIO.add_event_detect(self._pin, GPIO.RISING, callback=fce_to_call,
-                                  bouncetime=100)
+                                  bouncetime=bouncetime)
+            return True
+        else:
+            return False
 
-    def register_on_callback(self, callback):
+    def register_on_callback(self, callback, bouncetime=100):
         if self._initialized:
             fce_to_call = self._generate_callback(callback)
             GPIO.add_event_detect(self._pin, GPIO.FALLING, callback=fce_to_call,
-                                  bouncetime=100)
+                                  bouncetime=bouncetime)
+            return True
+        else:
+            return False
 
-    def register_both_callbacks(self, callback):
+    def register_both_callbacks(self, callback, bouncetime=100):
         if self._initialized:
             fce_to_call = self._generate_callback(callback)
             GPIO.add_event_detect(self._pin, GPIO.BOTH, callback=fce_to_call,
-                                  bouncetime=100)
+                                  bouncetime=bouncetime)
+            return True
+        else:
+            return False
 
     def remove_callbacks(self):
         if self._initialized:
@@ -313,4 +322,50 @@ class ServosDriver(object):
             self.tilt_servo.cleanup()
             os.system('sudo killall servod')
             self._initialized = False
+
+class WheelCounter(object):
+    """ 
         
+    """
+    def __init__(self, whlsensor, motor):
+        self._whlsensor = whlsensor
+        self._motor = motor
+        self._counting = False
+        self._count = 0
+        self._target = 0
+
+    @property
+    def count(self):
+        return self._count
+
+    def init(self):
+        pass
+
+    def cleanup(self):
+        if self._counting:
+            self._stop
+
+    def start(self, target):
+        if self._counting:
+            print('Already running')
+        else:
+            self._count = 0
+            self._target = target
+            res = self._whlsensor.register_both_callbacks(self._callback, 20)
+            if res:
+                self._counting = True
+            else:
+                print('Sensor not initiated')
+
+    def _stop(self):
+        if self._counting:
+            self._motor.stop()
+            self._whlsensor.remove_callbacks()
+            self._count = 0
+            self._target = 0
+            self._counting = False
+
+    def _callback(self, pin, state):
+        self._count += 1
+        if self._count == self._target:
+            self._stop()

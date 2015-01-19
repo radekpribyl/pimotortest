@@ -1,5 +1,5 @@
-from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, WhiteLED, WheelSensor, ServosDriver
-from pi2golite.behaviours import Steering
+from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, WhiteLED, WheelSensor, ServosDriver, WheelCounter
+from pi2golite.behaviours import Steering, StepSteering
 
 class Robot(object):
     """
@@ -13,7 +13,7 @@ class Robot(object):
     def __init__(self, cfg=None):
         self.is_robot_initiated = False
 
-        if not issubclass(cfg.__class__, Pi2GoLiteConfig) or cfg is None:
+        if not isinstance(cfg, Pi2GoLiteConfig) or cfg is None:
             cfg = Pi2GoLiteConfig()
 
         #Defining robot's hardware components
@@ -46,8 +46,14 @@ class Robot(object):
         #Aliases for wheel sensors as they have to be switched
         #Pins are the same as for line sensors
         if cfg.wheelsensors['avail']:
-            self.components['wheelsensor_left'] = WheelSensor(self.components['linesensor_left'])
-            self.components['wheelsensor_right'] = WheelSensor(self.components['linesensor_right'])
+            whl_sen_lf = WheelSensor(self.components['linesensor_left'])
+            whl_sen_rg = WheelSensor(self.components['linesensor_right'])
+            self.components['wheelsensor_left'] = whl_sen_lf
+            self.components['wheelsensor_right'] = whl_sen_rg
+            whl_cntr_lf = WheelCounter(whl_sen_lf, motor_left)
+            whl_cntr_lf = WheelCounter(whl_sen_rg, motor_right)
+            self.components['wheelcounter_left'] = whl_cntr_lf
+            self.components['wheelcounter_right'] = whl_cntr_lf
 
         #Servos
         if cfg.servos['avail']:
@@ -55,6 +61,7 @@ class Robot(object):
 
         #Adding behaviour
         self.steering = Steering(motor_left, motor_right)
+        self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_lf)
 
     def __getattr__(self, attrname):
         """"Delegate to steering instance to simplify access to key robot's methods"""
