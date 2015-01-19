@@ -24,6 +24,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="malina.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="pi2go.py" />
     <Compile Include="pi2golite\_helpers.py">
       <SubType>Code</SubType>
@@ -50,9 +53,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="webapp\config.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pi2gomock.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="webapp\motorapi.py">

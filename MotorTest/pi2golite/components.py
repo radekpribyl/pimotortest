@@ -23,12 +23,13 @@ GPIO.setmode(GPIO.BOARD)
 
 #Classes
 class Motor(object):
-    def __init__(self, pin_fwd, pin_rev, correction=0):
-        self._pin_fwd = pin_fwd
-        self._pin_rev = pin_rev
+    def __init__(self, fwdpin, revpin, fwdcorr=0, revcorr=0):
+        self._pin_fwd = fwdpin
+        self._pin_rev = revpin
         self._pwd_fwd = None
         self._pwd_rev = None
-        self._correction = 1 - (float(validate_max(correction)) / 100)
+        self._fwdcorr = 1 - (float(validate_max(fwdcorr)) / 100)
+        self._revcorr = 1 - (float(validate_max(revcorr)) / 100)
         self._initialized = False
 
     def init(self, init_speed=20):
@@ -52,14 +53,14 @@ class Motor(object):
         if self._initialized:
             speed = validate_max(speed)
             self._pwd_fwd.ChangeFrequency(speed + 5)
-            self._pwd_fwd.ChangeDutyCycle(speed * self._correction)
+            self._pwd_fwd.ChangeDutyCycle(speed * self._fwdcorr)
             self._pwd_rev.ChangeDutyCycle(0)
 
     def reverse(self, speed):
         if self._initialized:
             speed = validate_max(speed)
             self._pwd_rev.ChangeFrequency(speed + 5)
-            self._pwd_rev.ChangeDutyCycle(speed * self._correction)
+            self._pwd_rev.ChangeDutyCycle(speed * self._revcorr)
             self._pwd_fwd.ChangeDutyCycle(0)
 
     def stop(self):
@@ -209,8 +210,7 @@ class DistanceSensor(object):
     def start_distance_measure(self, callback, delay=1):
         if not self.measure_running.is_set():
             if callable(callback):
-                self._measure_thread = threading.Thread(target=self._distance_measure,
-                                                        args=(callback, delay))
+                self._measure_thread = threading.Thread(target=self._distance_measure, args=(callback, delay))
                 self.measure_running.set()
                 self._measure_thread.start()
             else:
@@ -244,7 +244,7 @@ class DistanceSensor(object):
 
 
 class Servo(object):
-    def __init__(self, pin, min_steps, max_steps, max_angle=180):
+    def __init__(self, pin, min_steps, max_steps, max_angle):
         self._pin = pin
         self._min_steps = min_steps
         self._max_steps = max_steps
@@ -257,8 +257,8 @@ class Servo(object):
             angle = validate_max(angle, self._max_angle)
             self._curr_angle = angle
             steps = int(self._min_steps + (self._curr_angle * (self._max_steps - self._min_steps) / self._max_angle))
-            print(steps)
-            os.system("echo P1-" + str(self._pin) + "=" + str(steps) + " > /dev/servoblaster") 
+            command = 'echo P1-%s=%s > /dev/servoblaster' % (self._pin, steps) 
+            os.system(command) 
 
     def increase_angle(self, increment=10):
         self.set_angle(self._curr_angle + increment)
@@ -275,25 +275,32 @@ class Servo(object):
         self._initialized = False
 
 class ServosDriver(object):
-    """Class which starts the servod blaster and configures it
-    It also initiates servos which are connected (pan and tilt)"""
-    idle_timeout = 2000
-    min_steps = 50
-    max_steps = 250
-    def __init__(self, panpin=18, tiltpin=22):
+    """
+    Class which starts the servod blaster and configures it
+    It also initiates servos which are connected (pan and tilt)
+    """
+    def __init__(self, panpin, tiltpin, idletimeout, minsteps,
+                 maxsteps, panmaxangle, tiltmaxangle):
         self._panpin = panpin
         self._tiltpin = tiltpin
-        self.pan_servo = Servo(self._panpin, ServosDriver.min_steps, ServosDriver.max_steps)
-        self.tilt_servo = Servo(self._tiltpin, ServosDriver.min_steps, ServosDriver.max_steps)
+        self._idletimeout = idletimeout
+        self._minsteps = minsteps
+        self._maxsteps = maxsteps
+        self.pan_servo = Servo(self._panpin, self._minsteps,
+                               self._maxsteps, panmaxangle)
+        self.tilt_servo = Servo(self._tiltpin, self._minsteps,
+                               self._maxsteps, tiltmaxangle)
         self._initialized = False
 
     def init(self):
         """Starts the servod and initializes both servos"""
         if not self._initialized:
             path = os.path.split(os.path.realpath(__file__))[0]
-            command = '/servod --idle-timeout=%s --min=%s --max=%s --p1pins="%s,%s" > /dev/null' % (ServosDriver.idle_timeout, ServosDriver.min_steps,
-                                                ServosDriver.max_steps, self._panpin, self._tiltpin)
-            print(command)
+            command = ('/servod --idle-timeout=%s --min=%s --max=%s '
+                       '--p1pins="%s,%s" > /dev/null') % (self._idletimeout,
+                                                          self._minsteps,
+                                                          self._maxsteps,
+                                                          self._panpin, self._tiltpin)
             os.system(path + command)
             self.pan_servo.init()
             self.tilt_servo.init()

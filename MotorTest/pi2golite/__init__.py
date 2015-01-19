@@ -2,50 +2,59 @@ from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, WhiteLED
 from pi2golite.behaviours import Steering
 
 class Robot(object):
-    """The Robot class assebles all the individual components together
-    and adds basic behaviours to the pi2golite robot"""
+    """
+    The Robot class assebles all the individual components together
+    and adds basic behaviours to the pi2golite robot
 
-    def __init__(self, wheel_sensors=True, servos=True):
+    :param cfg:  Instance of Pi2GoLiteConfig. If none then default
+                configuration is used
+    """
+
+    def __init__(self, cfg=None):
         self.is_robot_initiated = False
+
+        if not issubclass(cfg.__class__, Pi2GoLiteConfig) or cfg is None:
+            cfg = Pi2GoLiteConfig()
 
         #Defining robot's hardware components
         self.components = {}
-        
+
         #Both motor setup
-        left_motor = Motor(26, 24, 7.3)
-        right_motor = Motor(19, 21)
-        self.components['left_motor'] = left_motor
-        self.components['right_motor'] = right_motor
+        motor_left = Motor(**cfg.motor_left)
+        motor_right = Motor(**cfg.motor_right)
+
+        self.components['left_motor'] = motor_left
+        self.components['right_motor'] = motor_right
 
         #While LEDs setup
-        self.components['front_Led'] = WhiteLED(15)
-        self.components['rear_Led'] = WhiteLED(16)
+        self.components['front_led'] = WhiteLED(**cfg.front_led)
+        self.components['rear_led'] = WhiteLED(**cfg.rear_led)
 
         #IR sensors
-        self.components['obstacle_left'] = Sensor(7)
-        self.components['obstacle_right'] = Sensor(11)
-        self.components['linesensor_left'] = Sensor(12)
-        self.components['linesensor_right'] = Sensor(13)
+        self.components['obstacle_left'] = Sensor(**cfg.obstacle_left)
+        self.components['obstacle_right'] = Sensor(**cfg.obstacle_right)
+        self.components['linesensor_left'] = Sensor(**cfg.linesensor_left)
+        self.components['linesensor_right'] = Sensor(**cfg.linesensor_right)
 
         #Switch
-        self.components['switch'] = Switch(23)
+        self.components['switch'] = Switch(**cfg.switch)
 
         #Distance sensor
-        self.components['distance_sensor'] = DistanceSensor(8)
+        self.components['distance_sensor'] = DistanceSensor(**cfg.distance_sensor)
 
         #Optional components
         #Aliases for wheel sensors as they have to be switched
         #Pins are the same as for line sensors
-        if wheel_sensors:
+        if cfg.wheelsensors['avail']:
             self.components['wheelsensor_left'] = WheelSensor(self.components['linesensor_left'])
             self.components['wheelsensor_right'] = WheelSensor(self.components['linesensor_right'])
 
         #Servos
-        if servos:
-            self.components['servos'] = ServosDriver()
+        if cfg.servos['avail']:
+            self.components['servos'] = ServosDriver(**cfg.servos['param'])
 
         #Adding behaviour
-        self.steering = Steering(left_motor, right_motor)
+        self.steering = Steering(motor_left, motor_right)
 
     def __getattr__(self, attrname):
         """"Delegate to steering instance to simplify access to key robot's methods"""
@@ -65,3 +74,25 @@ class Robot(object):
         for component in self.components.values():
             component.cleanup()
         self.is_robot_initiated = False
+
+class Pi2GoLiteConfig(object):
+    """
+    Configuration class which provides default configuration
+    Either subclass it or modify the values in the instance
+    and pass it to Robot class
+    """
+    motor_left = {'fwdpin': 26, 'revpin': 24, 'fwdcorr': 0, 'revcorr': 0}
+    motor_right = {'fwdpin': 19, 'revpin': 21, 'fwdcorr': 0, 'revcorr': 0}
+    front_led = {'pin':15}
+    rear_led = {'pin':16}
+    obstacle_left = {'pin': 7}
+    obstacle_right = {'pin': 11}
+    linesensor_left = {'pin': 12}
+    linesensor_right = {'pin': 13}
+    switch = {'pin': 23}
+    distance_sensor = {'pin': 8}
+    wheelsensors = {'avail': False}
+    servos = {'avail': False,
+              'param': {'panpin': 18, 'tiltpin': 22, 'idletimeout': 2000, 
+                        'minsteps': 50, 'maxsteps': 250, 'panmaxangle': 180,
+                        'tiltmaxangle': 180}}
