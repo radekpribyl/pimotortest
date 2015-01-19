@@ -61,7 +61,7 @@ class Robot(object):
 
         #Adding behaviour
         self.steering = Steering(motor_left, motor_right)
-        self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_lf)
+        self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_rg)
 
     def __getattr__(self, attrname):
         """"Delegate to steering instance to simplify access to key robot's methods"""
