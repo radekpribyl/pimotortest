@@ -351,7 +351,7 @@ class WheelCounter(object):
             print('Already running')
         else:
             self._count = 0
-            self._target = target
+            self._target = int(round(target))
             res = self._whlsensor.register_both_callbacks(self._callback, 20)
             if res:
                 self._counting = True
@@ -368,5 +368,5 @@ class WheelCounter(object):
 
     def _callback(self, pin, state):
         self._count += 1
-        if self._count == self._target:
+        if self._count >= self._target:
             self._stop()
