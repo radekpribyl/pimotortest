@@ -79,25 +79,25 @@ class Steering(object):
         self._last_action = Steering.spin_right
         self._last_action_arguments = None
 
-    def turn_forward_left(self, lf_pct=50):
+    def turn_left(self, lf_pct=50):
         lf_speed = float(validate_max(lf_pct)) / 100 * self._curr_speed
         self._go_forward(lf_speed, self._curr_speed)
         self._last_action = Steering.turn_forward_left
         self._last_action_arguments = {'lf_pct' : lf_pct}
 
-    def turn_forward_right(self, rg_pct=50):
+    def turn_right(self, rg_pct=50):
         rg_speed = float(validate_max(rg_pct)) / 100 * self._curr_speed
         self._go_forward(self._curr_speed, rg_speed)
         self._last_action = Steering.turn_forward_right
         self._last_action_arguments = {'rg_pct' : rg_pct}
 
-    def turn_reverse_left(self, lf_pct=50):
+    def turn_rev_left(self, lf_pct=50):
         lf_speed = float(validate_max(lf_pct)) / 100 * self._curr_speed
         self._go_reverse(lf_speed, self._curr_speed)
         self._last_action = Steering.turn_reverse_left
         self._last_action_arguments = {'lf_pct' : lf_pct}
 
-    def turn_reverse_right(self, rg_pct=50):
+    def turn_rev_right(self, rg_pct=50):
         rg_speed = float(validate_max(rg_pct)) / 100 * self._curr_speed
         self._go_reverse(self._curr_speed, rg_speed)
         self._last_action = Steering.turn_reverse_right
@@ -157,25 +157,25 @@ class StepSteering(object):
             self._whl_counter_rg.start(steps)
             self._steering.spin_right()
 
-    def turn_forward_left(self, steps):
+    def turn_left(self, steps):
         if steps > 0:
             self._whl_counter_rg.start(steps)
-            self._steering.turn_forward_left(0)
+            self._steering.turn_left(0)
 
-    def turn_forward_right(self, steps):
+    def turn_right(self, steps):
         if steps > 0:
             self._whl_counter_lf.start(steps)
-            self._steering.turn_forward_right(0)
+            self._steering.turn_right(0)
 
-    def turn_reverse_left(self, steps):
+    def turn_rev_left(self, steps):
         if steps > 0:
             self._whl_counter_rg.start(steps)
-            self._steering.turn_reverse_left(0)
+            self._steering.turn_rev_left(0)
 
-    def turn_reverse_right(self, steps):
+    def turn_rev_right(self, steps):
         if steps > 0:
             self._whl_counter_lf.start(steps)
-            self._steering.turn_reverse_right(0)
+            self._steering.turn_rev_right(0)
 
 class MeasureSteering(object):
     """
@@ -196,15 +196,20 @@ class MeasureSteering(object):
     """
     def __init__(self, step_steering, whl_diameter, robot_width, numsteps):
         self._step_steering = step_steering
+        self._robot_width = robot_width
         self._step_dist = math.pi * whl_diameter / numsteps
-        self._angle_dist = math.pi * 2 * robot_width / 360
 
     def _calc_steps_from_dist(self, dist):
         return round(dist / self._step_dist)
 
-    def _calc_steps_from_angle(self, angle):
+    def _calc_steps_from_angle(self, angle, spin=False):
         angle = validate_max(angle, 360)
-        return angle * self._angle_dist / self._step_dist
+        #For turning the robot width is radius, for spin diameter
+        if spin:
+            const = 1
+        else:
+            const = 2
+        return angle * math.pi * const * self._robot_width / 360 / self._step_dist
 
     def forward(self, distance):
         if distance > 0:
@@ -216,18 +221,26 @@ class MeasureSteering(object):
             steps = self._calc_steps_from_dist(distance)
             self._step_steering.reverse(steps)
 
-    def turn_forward_left(self, angle):
-        steps = self._calc_steps_from_angle(angle)
-        self._step_steering.turn_forward_left(steps)
+    def spin_left(self, angle):
+        steps = self._calc_steps_from_angle(angle, True)
+        self._step_steering.spin_left(steps)
 
-    def turn_forward_right(self, angle):
-        steps = self._calc_steps_from_angle(angle)
-        self._step_steering.turn_forward_right(steps)
+    def spin_right(self, angle):
+        steps = self._calc_steps_from_angle(angle, True)
+        self._step_steering.spin_right(steps)
 
-    def turn_reverse_left(self, angle):
+    def turn_left(self, angle):
         steps = self._calc_steps_from_angle(angle)
-        self._step_steering.turn_reverse_left(steps)
+        self._step_steering.turn_left(steps)
 
-    def turn_reverse_right(self, angle):
+    def turn_right(self, angle):
         steps = self._calc_steps_from_angle(angle)
-        self._step_steering.turn_reverse_right(steps)
+        self._step_steering.turn_right(steps)
+
+    def turn_rev_left(self, angle):
+        steps = self._calc_steps_from_angle(angle)
+        self._step_steering.turn_rev_left(steps)
+
+    def turn_rev_right(self, angle):
+        steps = self._calc_steps_from_angle(angle)
+        self._step_steering.turn_rev_right(steps)

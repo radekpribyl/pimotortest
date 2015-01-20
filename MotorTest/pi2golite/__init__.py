@@ -119,7 +119,7 @@ class Pi2GoLiteConfig(object):
     switch = {'pin': 23}
     distance_sensor = {'pin': 8}
     wheelsensors = {'avail': False,
-                    'measure_param':{'whl_diameter' : 6.5, 'robot_width': 13.5,
+                    'measure_param':{'whl_diameter' : 6.5, 'robot_width': 12,
                                      'numsteps': 16}}
     servos = {'avail': False,
               'param': {'panpin': 18, 'tiltpin': 22, 'idletimeout': 2000,
