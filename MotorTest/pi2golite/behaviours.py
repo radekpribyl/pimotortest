@@ -197,7 +197,7 @@ class MeasureSteering(object):
     def __init__(self, step_steering, whl_diameter, robot_width, numsteps):
         self._step_steering = step_steering
         self._step_dist = math.pi * whl_diameter / numsteps
-        self._angle_dist = math.pi * robot_width / 360
+        self._angle_dist = math.pi * 2 * robot_width / 360
 
     def _calc_steps_from_dist(self, dist):
         return round(dist / self._step_dist)
