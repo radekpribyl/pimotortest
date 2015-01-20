@@ -1,5 +1,5 @@
 from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, WhiteLED, WheelSensor, ServosDriver, WheelCounter
-from pi2golite.behaviours import Steering, StepSteering
+from pi2golite.behaviours import Steering, StepSteering, MeasureSteering
 
 class Robot(object):
     """
@@ -45,7 +45,8 @@ class Robot(object):
         #Optional components
         #Aliases for wheel sensors as they have to be switched
         #Pins are the same as for line sensors
-        if cfg.wheelsensors['avail']:
+        self._whl_counters_avail = cfg.wheelsensors['avail']
+        if self._whl_counters_avail:
             whl_sen_lf = WheelSensor(self.components['linesensor_left'])
             whl_sen_rg = WheelSensor(self.components['linesensor_right'])
             self.components['wheelsensor_left'] = whl_sen_lf
@@ -61,10 +62,29 @@ class Robot(object):
 
         #Adding behaviour
         self.steering = Steering(motor_left, motor_right)
-        self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_rg)
+
+        if self._whl_counters_avail:
+            self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_rg)
+            self.measure_steering = MeasureSteering(self.step_steering,
+                                                    **cfg.wheelsensors['measure_param'])
 
     def __getattr__(self, attrname):
         """"Delegate to steering instance to simplify access to key robot's methods"""
+
+        if self._whl_counters_avail:
+            #Prefix step_ is used for step_steering so try it
+            if attrname.startswith('step_'):
+                attr = attrname.lstrip('step_')
+                if attr in (n for n in dir(self.step_steering) if not n.startswith('_')):
+                    return getattr(self.step_steering, attr)
+
+            #Another allowed prefix is meas_ for meaasure_steering actions
+            elif attrname.startswith('meas_'):
+                attr = attrname.lstrip('meas_')
+                if attr in (n for n in dir(self.measure_steering) if not n.startswith('_')):
+                    return getattr(self.measure_steering, attr)
+
+        #Lastly try steering and if not found raise error
         if attrname in (name for name in dir(self.steering) if not name.startswith('_')):
             return getattr(self.steering, attrname)
         else:
@@ -98,8 +118,10 @@ class Pi2GoLiteConfig(object):
     linesensor_right = {'pin': 13}
     switch = {'pin': 23}
     distance_sensor = {'pin': 8}
-    wheelsensors = {'avail': False}
+    wheelsensors = {'avail': False,
+                    'measure_param':{'whl_diameter' : 6.5, 'robot_width': 13.5,
+                                     'numsteps': 16}}
     servos = {'avail': False,
-              'param': {'panpin': 18, 'tiltpin': 22, 'idletimeout': 2000, 
+              'param': {'panpin': 18, 'tiltpin': 22, 'idletimeout': 2000,
                         'minsteps': 50, 'maxsteps': 250, 'panmaxangle': 180,
                         'tiltmaxangle': 180}}

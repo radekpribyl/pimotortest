@@ -2,7 +2,7 @@
     Python Module including classes to control HW aspects of Pi2Go robot
     Provides access to basic functions of the Pi2Go robot
     No logic included in this module
-    Module created by Radek Pribyl based on initial py2go file created 
+    Module created by Radek Pribyl based on initial py2go file created
     by Gareth Davies and Zachary Igielman
 """
 #Import all modules/libraries
@@ -78,7 +78,7 @@ class Sensor(object):
         if not self._initialized:
             GPIO.setup(self._pin, GPIO.IN)
             self._initialized = True
-                            
+
     def cleanup(self):
         if self._initialized:
             self.remove_callbacks()
@@ -165,7 +165,7 @@ class WhiteLED(object):
             self._pwm = GPIO.PWM(self._pin, 100)
             self._pwm.start(0)
             self._initialized = True
-                            
+
     def cleanup(self):
         if self._initialized:
             self.off()
@@ -219,7 +219,8 @@ class DistanceSensor(object):
     def start_distance_measure(self, callback, delay=1):
         if not self.measure_running.is_set():
             if callable(callback):
-                self._measure_thread = threading.Thread(target=self._distance_measure, args=(callback, delay))
+                self._measure_thread = threading.Thread(target=self._distance_measure,
+                                                        args=(callback, delay))
                 self.measure_running.set()
                 self._measure_thread.start()
             else:
@@ -298,7 +299,7 @@ class ServosDriver(object):
         self.pan_servo = Servo(self._panpin, self._minsteps,
                                self._maxsteps, panmaxangle)
         self.tilt_servo = Servo(self._tiltpin, self._minsteps,
-                               self._maxsteps, tiltmaxangle)
+                                self._maxsteps, tiltmaxangle)
         self._initialized = False
 
     def init(self):
