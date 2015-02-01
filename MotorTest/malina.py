@@ -9,5 +9,12 @@ class MalinaConfig(Pi2GoLiteConfig):
          self.servos['param']['maxsteps'] = 238
          self.wheelsensors['measure_param']['whl_diameter'] = 6.55
 
+
+def test():
+    r.set_speed(60)
+    for i in range(0,3):
+        r.meas_forward(30)
+        r.meas_turn_left(90)
+
 r = Robot(MalinaConfig())
 r.init()

@@ -65,7 +65,7 @@ class Robot(object):
         self.steering = Steering(motor_left, motor_right)
 
         if self._whl_counters_avail:
-            self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_rg)
+            self.step_steering = StepSteering(self.steering, whl_cntr_lf, whl_cntr_rg, whl_sen_lf, whl_sen_rg)
             self.measure_steering = MeasureSteering(self.step_steering,
                                                     **cfg.wheelsensors['measure_param'])
 
