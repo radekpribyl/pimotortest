@@ -5,6 +5,7 @@ Author: Radek Pribyl
 """
 from pi2golite._helpers import validate_max
 import math
+import time
 
 class Steering(object):
     """
@@ -48,7 +49,7 @@ class Steering(object):
     def stop(self):
         self._left_motor.stop()
         self._right_motor.stop()
-        self._last_action = Steering.stop
+        self._last_action = self.stop
         self._last_action_arguments = None
 
     def stop_left(self):
@@ -59,48 +60,48 @@ class Steering(object):
 
     def forward(self):
         self._go_forward(self._curr_speed, self._curr_speed)
-        self._last_action = Steering.forward
+        self._last_action = self.forward
         self._last_action_arguments = None
 
     def reverse(self):
         self._go_reverse(self._curr_speed, self._curr_speed)
-        self._last_action = Steering.reverse
+        self._last_action = self.reverse
         self._last_action_arguments = None
 
     def spin_left(self):
         self._left_motor.reverse(self._curr_speed)
         self._right_motor.forward(self._curr_speed)
-        self._last_action = Steering.spin_left
+        self._last_action = self.spin_left
         self._last_action_arguments = None
 
     def spin_right(self):
         self._left_motor.forward(self._curr_speed)
         self._right_motor.reverse(self._curr_speed)
-        self._last_action = Steering.spin_right
+        self._last_action = self.spin_right
         self._last_action_arguments = None
 
     def turn_left(self, lf_pct=50):
         lf_speed = float(validate_max(lf_pct)) / 100 * self._curr_speed
         self._go_forward(lf_speed, self._curr_speed)
-        self._last_action = Steering.turn_forward_left
+        self._last_action = self.turn_left
         self._last_action_arguments = {'lf_pct' : lf_pct}
 
     def turn_right(self, rg_pct=50):
         rg_speed = float(validate_max(rg_pct)) / 100 * self._curr_speed
         self._go_forward(self._curr_speed, rg_speed)
-        self._last_action = Steering.turn_forward_right
+        self._last_action = self.turn_right
         self._last_action_arguments = {'rg_pct' : rg_pct}
 
     def turn_rev_left(self, lf_pct=50):
         lf_speed = float(validate_max(lf_pct)) / 100 * self._curr_speed
         self._go_reverse(lf_speed, self._curr_speed)
-        self._last_action = Steering.turn_reverse_left
+        self._last_action = self.turn_revleft
         self._last_action_arguments = {'lf_pct' : lf_pct}
 
     def turn_rev_right(self, rg_pct=50):
         rg_speed = float(validate_max(rg_pct)) / 100 * self._curr_speed
         self._go_reverse(self._curr_speed, rg_speed)
-        self._last_action = Steering.turn_reverse_right
+        self._last_action = self.turn_rev_right
         self._last_action_arguments = {'rg_pct' : rg_pct}
 
     def set_speed(self, speed):
@@ -132,50 +133,68 @@ class StepSteering(object):
         self._steering = steering
         self._whl_counter_lf = whl_counter_lf
         self._whl_counter_rg = whl_counter_rg
+        self._lf_motor_running = False
+        self._rg_motor_running = False
+
+    def _wait_while_running(self):
+        while self._lf_motor_running and self._rg_motor_running:
+            time.sleep(0.01)
+        self._steering.stop()
+
+    def _stop_left(self):
+        self._steering.stop_left()
+        self._lf_motor_running = False
+
+    def _stop_right(self):
+        self._steering.stop_right()
+        self._rg_motor_running = False
+
+    def _run_both_motors(self, action, steps):
+        if steps > 0:
+            self._lf_motor_running = True
+            self._rg_motor_running = True
+            self._whl_counter_lf.start(steps, self._stop_left)
+            self._whl_counter_rg.start(steps, self._stop_right)
+            action()
+            self._wait_while_running()
+
+    def _run_left_motor(self, action, steps, *args):
+        if steps > 0:
+            self._lf_motor_running = True
+            self._whl_counter_lf.start(steps, self._stop_left)
+            action(*args)
+            self._wait_while_running()
+
+    def _run_right_motor(self, action, steps, *args):
+        if steps > 0:
+            self._rg_motor_running = True
+            self._whl_counter_rg.start(steps, self._stop_right)
+            action(*args)
+            self._wait_while_running()
 
     def forward(self, steps):
-        if steps > 0:
-            self._whl_counter_lf.start(steps)
-            self._whl_counter_rg.start(steps)
-            self._steering.forward()
+        self._run_both_motors(self._steering.forward, steps)
 
     def reverse(self, steps):
-        if steps > 0:
-            self._whl_counter_lf.start(steps)
-            self._whl_counter_rg.start(steps)
-            self._steering.reverse()
+        self._run_both_motors(self._steering.reverse, steps)
 
     def spin_left(self, steps):
-        if steps > 0:
-            self._whl_counter_lf.start(steps)
-            self._whl_counter_rg.start(steps)
-            self._steering.spin_left()
+        self._run_both_motors(self._steering.spin_left, steps)
 
     def spin_right(self, steps):
-        if steps > 0:
-            self._whl_counter_lf.start(steps)
-            self._whl_counter_rg.start(steps)
-            self._steering.spin_right()
+        self._run_both_motors(self._steering.spin_right, steps)
 
     def turn_left(self, steps):
-        if steps > 0:
-            self._whl_counter_rg.start(steps)
-            self._steering.turn_left(0)
+        self._run_right_motor(self._steering.turn_left, steps, 0)
 
     def turn_right(self, steps):
-        if steps > 0:
-            self._whl_counter_lf.start(steps)
-            self._steering.turn_right(0)
+        self._run_left_motor(self._steering.turn_right, steps, 0)
 
     def turn_rev_left(self, steps):
-        if steps > 0:
-            self._whl_counter_rg.start(steps)
-            self._steering.turn_rev_left(0)
+        self._run_right_motor(self._steering.turn_rev_left, steps, 0)
 
     def turn_rev_right(self, steps):
-        if steps > 0:
-            self._whl_counter_lf.start(steps)
-            self._steering.turn_rev_right(0)
+        self._run_left_motor(self._steering.turn_rev_right, steps, 0)
 
 class MeasureSteering(object):
     """

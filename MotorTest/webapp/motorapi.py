@@ -12,10 +12,9 @@ connected_users = 0
 steering_functions = {
     "dopredu" : steering.forward, "dozadu": steering.reverse,
     "rotujvlevo" : steering.spin_left, "rotujvpravo" : steering.spin_right,
-    "zatocvpredvpravo" : steering.turn_forward_right, 
-    "zatocvpredvlevo": steering.turn_forward_left,
-    "zatocvzadvlevo" : steering.turn_reverse_left,
-    "zatocvzadvpravo" : steering.turn_reverse_right, "stop": steering.stop}
+    "zatocvpredvpravo" : steering.turn_right, "zatocvpredvlevo": steering.turn_left,
+    "zatocvzadvlevo" : steering.turn_rev_left, "zatocvzadvpravo" : 
+    steering.turn_rev_right, "stop": steering.stop}
 
  #Websockets
 @socketio.on('connect', namespace='/malina')

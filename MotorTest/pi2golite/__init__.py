@@ -1,4 +1,5 @@
-from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, WhiteLED, WheelSensor, ServosDriver, WheelCounter
+from pi2golite.components import DistanceSensor, Motor, Sensor, Switch, \
+    WhiteLED, WheelSensor, ServosDriver, WheelCounter
 from pi2golite.behaviours import Steering, StepSteering, MeasureSteering
 
 class Robot(object):
@@ -51,8 +52,8 @@ class Robot(object):
             whl_sen_rg = WheelSensor(self.components['linesensor_right'])
             self.components['wheelsensor_left'] = whl_sen_lf
             self.components['wheelsensor_right'] = whl_sen_rg
-            whl_cntr_lf = WheelCounter(whl_sen_lf, motor_left)
-            whl_cntr_rg = WheelCounter(whl_sen_rg, motor_right)
+            whl_cntr_lf = WheelCounter(whl_sen_lf)
+            whl_cntr_rg = WheelCounter(whl_sen_rg)
             self.components['wheelcounter_left'] = whl_cntr_lf
             self.components['wheelcounter_right'] = whl_cntr_rg
 
