@@ -21,7 +21,7 @@ class Steering(object):
         self._left_motor = lf_motor
         self._right_motor = rg_motor
         self._curr_speed = init_speed
-        self._last_action = Steering.stop
+        self._last_action = self.stop
         self._last_action_arguments = None
 
     def cleanup(self):
@@ -34,9 +34,9 @@ class Steering(object):
 
     def _exec_last_action(self):
         if self._last_action_arguments is None:
-            self._last_action(self)
+            self._last_action()
         else:
-            self._last_action(self, **self._last_action_arguments)
+            self._last_action(**self._last_action_arguments)
 
     def _go_forward(self, lf_speed, rg_speed):
         self._left_motor.forward(lf_speed)
