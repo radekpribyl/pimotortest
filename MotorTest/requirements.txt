@@ -1,0 +1,17 @@
+astroid==1.3.2
+colorama==0.3.3
+Flask==0.10.1
+Flask-SocketIO==0.5.0
+gevent==1.0.1
+gevent-socketio==0.3.6
+gevent-websocket==0.9.3
+greenlet==0.4.5
+itsdangerous==0.24
+Jinja2==2.7.3
+logilab-common==0.63.2
+MarkupSafe==0.23
+picamera==1.9
+ptvsd==2.1.0
+pylint==1.4.0
+six==1.9.0
+Werkzeug==0.9.6

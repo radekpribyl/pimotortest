@@ -190,6 +190,7 @@ class StepSteering(object):
         action()
 
         while lf_count < lf_steps or rg_count < rg_steps:
+            time.sleep(0.002)
             lf_cur_pos = self._whl_sen_lf.activated
             if lf_cur_pos != lf_lst_pos:
                 lf_count +=1
@@ -203,6 +204,7 @@ class StepSteering(object):
                 rg_lst_pos = rg_cur_pos
                 if rg_count >= rg_steps:
                     self._stop_right()
+            
 
         self._steering.stop()
 

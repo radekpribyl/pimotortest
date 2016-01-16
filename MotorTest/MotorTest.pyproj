@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="pi2golite\servod" />
+    <Content Include="requirements.txt" />
     <Content Include="webapp\static\css\bootstrap.css.map" />
     <Content Include="webapp\static\css\malina.css" />
     <Content Include="webapp\static\fonts\glyphicons-halflings-regular.eot" />

@@ -12,7 +12,7 @@ class MalinaConfig(Pi2GoLiteConfig):
 
 def test():
     r.set_speed(60)
-    for i in range(0,3):
+    for i in range(0,4):
         r.meas_forward(30)
         r.meas_turn_left(90)
 
