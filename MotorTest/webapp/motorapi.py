@@ -4,9 +4,9 @@ from flask_socketio import emit
 
 ROBOT = app.config["ROBOT"]
 steering = ROBOT.steering
-dist_sensor = ROBOT.distance_sensor
-obs_lf = ROBOT.obstacle_left
-obs_rg = ROBOT.obstacle_right
+dist_sensor = ROBOT.components["distance_sensor"]
+obs_lf = ROBOT.components["obstacle_left"]
+obs_rg = ROBOT.components["obstacle_right"]
 connected_users = 0
 
 steering_functions = {
